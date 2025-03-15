@@ -39,6 +39,7 @@ const ContactPage = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
+
       });
 
       const data = await response.json();
@@ -60,6 +61,8 @@ const ContactPage = () => {
       setFormStatus(null);
     }, 3000);
   };
+  console.log(import.meta.env.VITE_BACKEND_URL);
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex items-center justify-center p-4 overflow-hidden">
