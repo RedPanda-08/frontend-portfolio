@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Send, CheckCircle, AlertCircle, Github, Linkedin,Instagram, MapPin, Mail } from 'lucide-react';
 
 
+export const apiUrl = import.meta.env.VITE_BACKEND_URL;
 const ContactPage = () => {
   
   const [formData, setFormData] = useState({
