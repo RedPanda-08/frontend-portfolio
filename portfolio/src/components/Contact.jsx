@@ -35,7 +35,7 @@ const ContactPage = () => {
     setFormStatus('sending');
 
     try {
-      const response = await fetch("http://localhost:5000/send-email", {
+      const response = await fetch(VITE_BACKEND_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
