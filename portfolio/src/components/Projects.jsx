@@ -26,7 +26,7 @@ export default function Projects() {
         id: 2,
         title: "Portfolio",
         description: "The portfolio website you are currently viewing. It showcases my skills, projects, and contact information.",
-        technologies: ["React + Vite","Tailwind CSS","Framer Motion","Express.js","MongoDB"],
+        technologies: ["React + Vite","Tailwind CSS","Framer Motion","Express.js","Resend-Email for developers"],
         githubLink: "https://github.com/RedPanda-08/",
         liveLink: "https://example.com/",
         featured: false
