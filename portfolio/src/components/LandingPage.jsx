@@ -9,10 +9,10 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="h-screen w-full overflow-hidden relative flex flex-col justify-center items-center">
+    <div className="h-screen w-full overflow-hidden relative flex flex-col justify-center items-center p-4">
       {/* Floating Particles */}
       <div className="particles-container absolute inset-0 z-0">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(15)].map((_, i) => (
           <div
             key={i}
             className="particle absolute rounded-full bg-white opacity-30"
@@ -22,40 +22,39 @@ export default function LandingPage() {
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
               animation: `float ${Math.random() * 10 + 10}s linear infinite`,
-              animationDelay: `${Math.random() * 5}s`
+              animationDelay: `${Math.random() * 5}s`,
             }}
           />
         ))}
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex flex-col items-center">
-        <div
-          className="text-white text-8xl font-bold text-center mb-6 cookie-regular"
+      <div className="relative z-10 flex flex-col items-center text-center">
+        <h1
+          className="text-white text-5xl md:text-8xl font-bold cookie-regular mb-6"
           style={{
             animation: "fadeInDown 1.5s ease-out",
-            textShadow: "0 0 15px rgba(255,255,255,0.5)"
+            textShadow: "0 0 15px rgba(255,255,255,0.5)",
           }}
         >
           Navraj Singh's Portfolio
-        </div>
+        </h1>
 
         {/* Animated Glowing Button */}
         <Link to="/about">
-          <button 
-            className="mt-4 px-6 py-3 text-lg font-semibold text-black bg-white rounded-full shadow-md transition-transform transform hover:scale-110 active:scale-95 glow-button"
-          >Know Me    
+          <button className="mt-4 px-6 py-3 text-lg md:text-xl font-semibold text-black bg-white rounded-full shadow-md transition-transform transform hover:scale-110 active:scale-95 glow-button">
+            Know Me
           </button>
         </Link>
       </div>
 
       {/* Made with Love Text */}
-      <div className="absolute bottom-4 text-white text-lg font-semibold flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity glow-text">
+      <div className="absolute bottom-4 text-white text-sm md:text-lg font-semibold flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity glow-text">
         Made with <span className="text-red-500 text-2xl animate-pulse glow-heart">❤️</span> by Navraj Singh
       </div>
 
-      {/* Added  CSS for animations */}
-      <style jsx>{`
+      {/* Added CSS for animations */}
+      <style>{`
         @keyframes float {
           0% { transform: translateY(0) translateX(0); }
           50% { transform: translateY(-100px) translateX(100px); }
@@ -65,11 +64,6 @@ export default function LandingPage() {
         @keyframes fadeInDown {
           from { opacity: 0; transform: translateY(-50px); }
           to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
         }
 
         @keyframes buttonGlow {
@@ -91,7 +85,7 @@ export default function LandingPage() {
         }
 
         .glow-button {
-          animation: buttonGlow 1.5s infinite alternate, bounce 2s infinite;
+          animation: buttonGlow 1.5s infinite alternate;
         }
 
         .glow-text {
@@ -105,15 +99,11 @@ export default function LandingPage() {
         body {
           margin: 0;
           padding: 0;
-          height: 100vh;
-          width: 100vw;
           background-color: #000000;
         }
 
         .cookie-regular {
           font-family: "Cookie", cursive;
-          font-weight: 400;
-          font-style: normal;
         }
       `}</style>
     </div>
