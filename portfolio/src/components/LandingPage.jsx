@@ -1,18 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../index.css";
 import { Link } from "react-router-dom";
 
 export default function LandingPage() {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  
   useEffect(() => {
     document.body.style.backgroundColor = "#000000";
     document.body.style.overflow = "hidden";
+    
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
     <div className="h-screen w-full overflow-hidden relative flex flex-col justify-center items-center">
       {/* Floating Particles */}
       <div className="particles-container absolute inset-0 z-0">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(windowWidth > 768 ? 20 : 10)].map((_, i) => (
           <div
             key={i}
             className="particle absolute rounded-full bg-white opacity-30"
@@ -29,9 +38,9 @@ export default function LandingPage() {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex flex-col items-center">
+      <div className="relative z-10 flex flex-col items-center px-4 sm:px-0">
         <div
-          className="text-white text-8xl font-bold text-center mb-6 cookie-regular"
+          className="text-white text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold text-center mb-6 cookie-regular"
           style={{
             animation: "fadeInDown 1.5s ease-out",
             textShadow: "0 0 15px rgba(255,255,255,0.5)"
@@ -43,18 +52,18 @@ export default function LandingPage() {
         {/* Animated Glowing Button */}
         <Link to="/about">
           <button 
-            className="mt-4 px-6 py-3 text-lg font-semibold text-black bg-white rounded-full shadow-md transition-transform transform hover:scale-110 active:scale-95 glow-button"
+            className="mt-4 px-4 sm:px-6 py-2 sm:py-3 text-base sm:text-lg font-semibold text-black bg-white rounded-full shadow-md transition-transform transform hover:scale-110 active:scale-95 glow-button"
           >Know Me    
           </button>
         </Link>
       </div>
 
       {/* Made with Love Text */}
-      <div className="absolute bottom-4 text-white text-lg font-semibold flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity glow-text">
-        Made with <span className="text-red-500 text-2xl animate-pulse glow-heart">❤️</span> by Navraj Singh
+      <div className="absolute bottom-4 text-white text-sm sm:text-lg font-semibold flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity glow-text">
+        Made with <span className="text-red-500 text-xl sm:text-2xl animate-pulse glow-heart">❤️</span> by Navraj Singh
       </div>
 
-      {/* Added  CSS for animations */}
+      {/* Added CSS for animations */}
       <style jsx>{`
         @keyframes float {
           0% { transform: translateY(0) translateX(0); }
@@ -114,6 +123,14 @@ export default function LandingPage() {
           font-family: "Cookie", cursive;
           font-weight: 400;
           font-style: normal;
+        }
+        
+        @media (max-width: 640px) {
+          @keyframes float {
+            0% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-50px) translateX(50px); }
+            100% { transform: translateY(0) translateX(0); }
+          }
         }
       `}</style>
     </div>

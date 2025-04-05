@@ -527,21 +527,17 @@ export default function AboutMe() {
 
         /* Media Queries */
         @media (max-width: 768px) {
-          .timeline::before {
-            left: 20px;
-          }
-
-          .timeline-item {
-            width: 100%;
-            padding-left: 40px;
-            text-align: left;
-            left: 0;
-          }
-
-          .timeline-item.left .timeline-dot,
-          .timeline-item.right .timeline-dot {
-            left: 12px;
-          }
+            .timeline-single-column {
+              padding-left: 50px;
+            }
+            
+            .timeline-dot-single {
+              left: -20px;
+            }
+            
+            .timeline-content-single {
+              padding: 45px;
+            }
 
           .image-container {
             margin-top: 2rem;
@@ -583,6 +579,7 @@ export default function AboutMe() {
         }
         }
       `}</style>
+
       <motion.div
   initial={{ opacity: 0 }}
   animate={{ opacity: 1 }}
@@ -631,6 +628,8 @@ export default function AboutMe() {
       20% { transform: scale(1); }
       100% { transform: scale(1); }
     }
+    
+}
   `}</style>
   </motion.div>
     </div>
