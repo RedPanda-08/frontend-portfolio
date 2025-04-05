@@ -7,7 +7,6 @@ export default function LandingPage() {
   
   useEffect(() => {
     document.body.style.backgroundColor = "#000000";
-    document.body.style.overflow = "hidden";
     
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
