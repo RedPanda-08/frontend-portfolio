@@ -7,6 +7,7 @@ export default function LandingPage() {
   
   useEffect(() => {
     document.body.style.backgroundColor = "#000000";
+    document.body.style.overflow = "auto"; // Changed from "hidden"
     
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -17,9 +18,9 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="h-screen w-full overflow-hidden relative flex flex-col justify-center items-center">
+    <div className="min-h-screen w-full relative flex flex-col">
       {/* Floating Particles */}
-      <div className="particles-container absolute inset-0 z-0">
+      <div className="particles-container absolute inset-0 z-0 overflow-hidden">
         {[...Array(windowWidth > 768 ? 20 : 10)].map((_, i) => (
           <div
             key={i}
@@ -36,8 +37,8 @@ export default function LandingPage() {
         ))}
       </div>
 
-      {/* Main Content */}
-      <div className="relative z-10 flex flex-col items-center px-4 sm:px-0">
+      {/* Main Content - now using flex-grow */}
+      <div className="flex-grow flex flex-col justify-center items-center relative z-10 px-4 sm:px-0">
         <div
           className="text-white text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold text-center mb-6 cookie-regular"
           style={{
@@ -48,21 +49,21 @@ export default function LandingPage() {
           Navraj Singh's Portfolio
         </div>
 
-        {/* Animated Glowing Button */}
         <Link to="/about">
           <button 
             className="mt-4 px-4 sm:px-6 py-2 sm:py-3 text-base sm:text-lg font-semibold text-black bg-white rounded-full shadow-md transition-transform transform hover:scale-110 active:scale-95 glow-button"
-          >Know Me    
+          >
+            Know Me    
           </button>
         </Link>
       </div>
 
-      {/* Made with Love Text */}
-      <div className="absolute bottom-4 text-white text-sm sm:text-lg font-semibold flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity glow-text">
+      {/* Footer - now properly positioned */}
+      <div className="w-full py-4 text-center text-white text-sm sm:text-lg font-semibold flex items-center justify-center gap-2 opacity-80 hover:opacity-100 transition-opacity glow-text">
         Made with <span className="text-red-500 text-xl sm:text-2xl animate-pulse glow-heart">❤️</span> by Navraj Singh
       </div>
 
-      {/* Added CSS for animations */}
+      {/* CSS remains the same */}
       <style jsx>{`
         @keyframes float {
           0% { transform: translateY(0) translateX(0); }
@@ -113,8 +114,7 @@ export default function LandingPage() {
         body {
           margin: 0;
           padding: 0;
-          height: 100vh;
-          width: 100vw;
+          min-height: 100vh;
           background-color: #000000;
         }
 
