@@ -7,7 +7,7 @@ export default function LandingPage() {
   
   useEffect(() => {
     document.body.style.backgroundColor = "#000000";
-    document.body.style.overflow = "auto"; // Changed from "hidden"
+    document.body.style.overflow = "auto";
     
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -18,8 +18,8 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen w-full relative flex flex-col">
-      {/* Floating Particles */}
+    <div className="min-h-screen w-full flex flex-col" style={{ height: '100vh' }}>
+      {/* Floating Particles (with overflow-hidden only here) */}
       <div className="particles-container absolute inset-0 z-0 overflow-hidden">
         {[...Array(windowWidth > 768 ? 20 : 10)].map((_, i) => (
           <div
@@ -37,7 +37,7 @@ export default function LandingPage() {
         ))}
       </div>
 
-      {/* Main Content - now using flex-grow */}
+      {/* Main Content - centered with space for footer */}
       <div className="flex-grow flex flex-col justify-center items-center relative z-10 px-4 sm:px-0">
         <div
           className="text-white text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold text-center mb-6 cookie-regular"
@@ -58,12 +58,11 @@ export default function LandingPage() {
         </Link>
       </div>
 
-      {/* Footer - now properly positioned */}
-      <div className="w-full py-4 text-center text-white text-sm sm:text-lg font-semibold flex items-center justify-center gap-2 opacity-80 hover:opacity-100 transition-opacity glow-text">
+      {/* Fixed Footer at bottom */}
+      <div className="w-full py-4 text-center text-white text-sm sm:text-lg font-semibold flex items-center justify-center gap-2 opacity-80 hover:opacity-100 transition-opacity glow-text relative z-10">
         Made with <span className="text-red-500 text-xl sm:text-2xl animate-pulse glow-heart">❤️</span> by Navraj Singh
       </div>
 
-      {/* CSS remains the same */}
       <style jsx>{`
         @keyframes float {
           0% { transform: translateY(0) translateX(0); }
