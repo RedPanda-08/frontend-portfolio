@@ -35,8 +35,8 @@ export default function AboutMe() {
       }, 10);
     }
 
-    // Make sure there's enough content to scroll
-    document.body.style.minHeight = "101vh";
+    // // Make sure there's enough content to scroll
+    // document.body.style.minHeight = "101vh";
 
     return () => {
       typed.destroy();
@@ -525,22 +525,22 @@ export default function AboutMe() {
           margin-bottom: 5px;
         }
           @media (max-width: 768px) {
-  .timeline-item {
-    width: 100%;
-    left: 0 !important;
-    text-align: left !important;
-    padding-left: 40px;
-  }
+            .timeline-item {
+              width: 100%;
+              left: 0 !important;
+              text-align: left !important;
+              padding-left: 40px;
+            }
 
-  .timeline::before {
-    left: 20px;
-  }
+            .timeline::before {
+              left: 20px;
+            }
 
-  .timeline-dot {
-    left: 12px !important;
-    right: auto !important;
-  }
-}
+            .timeline-dot {
+              left: 12px !important;
+              right: auto !important;
+            }
+          }
 
 
         /* Media Queries */
