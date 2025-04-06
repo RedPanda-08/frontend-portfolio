@@ -524,6 +524,24 @@ export default function AboutMe() {
         .timeline-description p {
           margin-bottom: 5px;
         }
+          @media (max-width: 768px) {
+  .timeline-item {
+    width: 100%;
+    left: 0 !important;
+    text-align: left !important;
+    padding-left: 40px;
+  }
+
+  .timeline::before {
+    left: 20px;
+  }
+
+  .timeline-dot {
+    left: 12px !important;
+    right: auto !important;
+  }
+}
+
 
         /* Media Queries */
         @media (max-width: 768px) {

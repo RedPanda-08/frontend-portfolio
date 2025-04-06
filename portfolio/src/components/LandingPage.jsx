@@ -37,7 +37,6 @@ export default function LandingPage() {
         ))}
       </div>
 
-      {/* Main Content - centered in available space */}
       <div className="relative z-10 flex flex-col justify-center items-center px-4 sm:px-0">
         <div
           className="text-white text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold text-center mb-6 cookie-regular"
