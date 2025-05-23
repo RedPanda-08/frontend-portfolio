@@ -28,43 +28,49 @@ const ContactPage = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (formStatus === 'sending') return;
-    
-    // Simple validation
-    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+  e.preventDefault();
+  if (formStatus === 'sending') return;
+  
+  // Validation
+  if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+    setFormStatus('error');
+    setAlertMessage('Please fill in all required fields.');
+    setTimeout(() => setFormStatus(null), 3000);
+    return;
+  }
+
+  setFormStatus('sending');
+
+  try {
+    const response = await fetch('https://portfolio-backend-1-eogw.onrender.com/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.success) {
+      setFormStatus('success');
+      setAlertMessage('Message sent successfully!');
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } else {
       setFormStatus('error');
-      setAlertMessage('Please fill in all required fields.');
-      setTimeout(() => setFormStatus(null), 3000);
-      return;
+      setAlertMessage(data.message || 'Failed to send message');
     }
+  } catch (error) {
+    console.error("Error:", error);
+    setFormStatus('error');
+    setAlertMessage('Network error. Please try again.');
+  }
 
-    setFormStatus('sending');
-
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      const success = Math.random() > 0.3;
-      
-      if (success) {
-        setFormStatus('success');
-        setAlertMessage('Message sent successfully!');
-        setFormData({ name: "", email: "", subject: "", message: "" });
-      } else {
-        setFormStatus('error');
-        setAlertMessage('Failed to send message. Please try again.');
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setFormStatus('error');
-      setAlertMessage('Something went wrong.');
-    }
-
-    setTimeout(() => {
-      setFormStatus(null);
-      setAlertMessage('');
-    }, 5000);
-  };
+  setTimeout(() => {
+    setFormStatus(null);
+    setAlertMessage('');
+  }, 5000);
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
