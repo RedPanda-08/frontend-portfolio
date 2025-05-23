@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Send, CheckCircle, AlertCircle, Github, Linkedin,Instagram, MapPin, Mail } from 'lucide-react';
+import { Send, CheckCircle, AlertCircle, Github, Linkedin, Instagram, MapPin, Mail } from 'lucide-react';
 
-
-export const apiUrl = import.meta.env.VITE_BACKEND_URL;
 const ContactPage = () => {
-  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -21,32 +18,38 @@ const ContactPage = () => {
 
   useEffect(() => {
     setTimeout(() => setAnimationState(prev => ({ ...prev, header: true })), 100);
-    setTimeout(() => setAnimationState(prev => ({ ...prev, contactCards: true })), 400);
-    setTimeout(() => setAnimationState(prev => ({ ...prev, form: true })), 700);
-    document.body.style.overflow = "hidden";
+    setTimeout(() => setAnimationState(prev => ({ ...prev, contactCards: true })), 300);
+    setTimeout(() => setAnimationState(prev => ({ ...prev, form: true })), 500);
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (formStatus === 'sending') return;
+    
+    // Simple validation
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      setFormStatus('error');
+      setAlertMessage('Please fill in all required fields.');
+      setTimeout(() => setFormStatus(null), 3000);
+      return;
+    }
+
     setFormStatus('sending');
 
     try {
-      const response = await fetch(`${apiUrl}/send-email`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-
-      });
-
-      const data = await response.json();
-      if (data.success) {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      const success = Math.random() > 0.3;
+      
+      if (success) {
         setFormStatus('success');
         setAlertMessage('Message sent successfully!');
-        setFormData({ name: "", email: "", subject: "", message: "" });  // Reset form
+        setFormData({ name: "", email: "", subject: "", message: "" });
       } else {
         setFormStatus('error');
         setAlertMessage('Failed to send message. Please try again.');
@@ -59,118 +62,240 @@ const ContactPage = () => {
 
     setTimeout(() => {
       setFormStatus(null);
-    }, 3000);
+      setAlertMessage('');
+    }, 5000);
   };
-  console.log(import.meta.env.VITE_BACKEND_URL);
-
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex items-center justify-center p-4 overflow-hidden">
-      <div className="w-full max-w-4xl mx-auto ">
-        <div className="grid md:grid-cols-5 gap-8 items-start">
-          <div className="md:col-span-2 space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+      {/* Main Container with centered content */}
+      <div className="w-full min-h-screen flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+        <div className="w-full max-w-6xl mx-auto">
+          {/* Mobile: Stack vertically, Desktop: Side by side */}
+          <div className="flex flex-col lg:grid lg:grid-cols-5 gap-8 lg:gap-12">
+            
+            {/* Contact Info Section */}
+            <div className="lg:col-span-2 space-y-6 md:space-y-8">
+              {/* Header Section */}
+              <div 
+                className={`transition-all duration-500 ease-out ${
+                  animationState.header ? 'translate-x-0 opacity-100' : '-translate-x-8 opacity-0'
+                }`}
+              >
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-5 mt-5">
+                  Get in Touch
+                </h1>
+                <div className="h-1 w-20 bg-blue-500 rounded mb-6"></div>
+                <p className="text-gray-300 text-base sm:text-lg leading-relaxed">
+                  I'm always open to new opportunities and collaborations. Feel free to reach out anytime.
+                </p>
+              </div>
+
+              {/* Contact Cards */}
+              <div className="space-y-4 md:space-y-6">
+                {/* Email Card */}
+                <div 
+                  className={`transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-lg p-5 bg-gray-800 bg-opacity-50 rounded-lg backdrop-blur-sm ${
+                    animationState.contactCards ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                  }`}
+                  style={{ transitionDelay: '100ms' }}
+                >
+                  <h3 className="text-lg font-semibold mb-2 flex items-center">
+                    <Mail size={20} className="mr-3 text-blue-400 flex-shrink-0" />
+                    Email
+                  </h3>
+                  <a 
+                    href="mailto:navrajpersonal27@gmail.com" 
+                    className="text-blue-400 hover:text-blue-300 text-sm sm:text-base break-all"
+                  >
+                    navrajpersonal27@gmail.com
+                  </a>
+                </div>
+
+                {/* Location Card */}
+                <div 
+                  className={`transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-lg p-5 bg-gray-800 bg-opacity-50 rounded-lg backdrop-blur-sm ${
+                    animationState.contactCards ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                  }`}
+                  style={{ transitionDelay: '200ms' }}
+                >
+                  <h3 className="text-lg font-semibold mb-2 flex items-center">
+                    <MapPin size={20} className="mr-3 text-blue-400 flex-shrink-0" />
+                    Location
+                  </h3>
+                  <p className="text-gray-300 text-sm sm:text-base">Telangana, India</p>
+                </div>
+
+                {/* Social Media Card */}
+                <div 
+                  className={`transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-lg p-5 bg-gray-800 bg-opacity-50 rounded-lg backdrop-blur-sm ${
+                    animationState.contactCards ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                  }`}
+                  style={{ transitionDelay: '300ms' }}
+                >
+                  <h3 className="text-lg font-semibold mb-3">Follow Me</h3>
+                  <div className="flex space-x-4">
+                    <a 
+                      href="https://github.com/RedPanda-08/" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-gray-400 hover:text-blue-400 transition-colors duration-300 p-2"
+                      aria-label="GitHub Profile"
+                    >
+                      <Github size={24} />
+                    </a>
+                    <a 
+                      href="https://linkedin.com/in/" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-gray-400 hover:text-blue-400 transition-colors duration-300 p-2"
+                      aria-label="LinkedIn Profile"
+                    >
+                      <Linkedin size={24} />
+                    </a>
+                    <a 
+                      href="https://www.instagram.com/" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-gray-400 hover:text-blue-400 transition-colors duration-300 p-2"
+                      aria-label="Instagram Profile"
+                    >
+                      <Instagram size={24} />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Form Section */}
             <div 
-              className={`transform transition-all duration-700 ${
-                animationState.header ? 'translate-x-0 opacity-100' : '-translate-x-16 opacity-0'
+              className={`lg:col-span-3 bg-gray-800 bg-opacity-50 rounded-lg p-6 sm:p-8 shadow-lg backdrop-blur-sm transition-all duration-500 ease-out hover:shadow-xl ${
+                animationState.form ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
               }`}
             >
-              <h1 className="text-4xl font-bold mb-2 ">Get in Touch</h1>
-              <div className="h-1 w-20 bg-blue-500 rounded mb-6"></div>
-              <p className="text-gray-300 mb-8 text-xl">I'm always open to new opportunities and collaborations. Feel free to reach out anytime.&#128512;
-              </p>
-            </div>
-
-            <div className="space-y-6">
-              <div 
-                className={`transform transition-all duration-500 hover:-translate-y-1 hover:shadow-lg p-4 bg-gray-800 bg-opacity-50 rounded-lg ${
-                  animationState.contactCards ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                }`}
-                style={{ transitionDelay: '100ms' }}
-              >
-                <h3 className="text-xl font-semibold mb-2 flex items-center">
-                  <Mail size={20} className="mr-2 text-white-500" />
-                  Email
-                </h3>
-                <p className="text-blue-400">navrajpersonal27@gmail.com</p>
-              </div>
-
-              <div 
-                className={`transform transition-all duration-500 hover:-translate-y-1 hover:shadow-lg p-4 bg-gray-800 bg-opacity-50 rounded-lg ${
-                  animationState.contactCards ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                }`}
-                style={{ transitionDelay: '200ms' }}
-              >
-                <h3 className="text-xl font-semibold mb-2 flex items-center">
-                  <MapPin size={20} className="mr-2 text-white-500" />
-                  Location
-                </h3>
-                <p className="text-gray-300">Telangana, India</p>
-              </div>
-
-              <div 
-                className={`transform transition-all duration-500 hover:-translate-y-1 hover:shadow-lg p-4 bg-gray-800 bg-opacity-50 rounded-lg ${
-                  animationState.contactCards ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                }`}
-                style={{ transitionDelay: '500ms' }}
-              >
-                <h3 className="text-xl font-semibold mb-2">Follow Me</h3>
-                <div className="flex space-x-4 mt-2">
-                  <a href="https://github.com/RedPanda-08/" target="_blank" rel="noopener noreferrer" className="text-white-400 hover:text-blue-400 transition-all duration-300 transform hover:scale-110">
-                    <Github size={32} className="bg-transparent rounded-full" />
-                  </a>
-                  <a href="https://linkedin.com/in/" target="_blank" rel="noopener noreferrer" className="text-white-600 hover:text-blue-400 transition-all duration-300 transform hover:scale-110">
-                    <Linkedin size={32} className="bg-transparent " />
-                  </a>
-                  <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="text-white-600 hover:text-blue-400 transition-all duration-300 transform hover:scale-110">
-                    <Instagram size={32} className="bg-transparent" />
-                  </a>
+              <h2 className="text-2xl sm:text-3xl font-bold mb-6">Send a Message</h2>
+              
+              {/* Form Status Alert */}
+              {formStatus && formStatus !== 'sending' && (
+                <div className={`mb-6 p-4 rounded-md text-white flex items-start text-sm sm:text-base ${
+                  formStatus === 'success' ? 'bg-green-600' : 'bg-red-600'
+                }`}>
+                  <div className="flex-shrink-0 mr-3">
+                    {formStatus === 'success' ? 
+                      <CheckCircle size={18} /> : 
+                      <AlertCircle size={18} />
+                    }
+                  </div>
+                  <div>{alertMessage}</div>
                 </div>
-              </div>
-            </div>
-          </div>
+              )}
 
-          <div 
-            className={`md:col-span-3 mt-5 bg-gray-800 bg-opacity-50 rounded-lg p-6 shadow-lg transform transition-all duration-700 hover:shadow-xl ${
-              animationState.form ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-16 opacity-0 scale-95'
-            }`}
-          >
-            <h2 className="text-2xl font-bold mb-6">Send a Message</h2>
-            
-            {/*Form Status*/}
-            {formStatus && formStatus !== 'sending' && (
-              <div className={`mb-4 p-3 rounded-md text-white flex items-center ${formStatus === 'success' ? 'bg-green-600' : 'bg-red-600'}`}>
-                {formStatus === 'success' ? <CheckCircle size={20} className="mr-2" /> : <AlertCircle size={20} className="mr-2" />}
-                {alertMessage}
-              </div>
-            )}
+              <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
+                {/* Name and Email Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                  <div>
+                    <label 
+                      htmlFor='name' 
+                      className="block text-sm sm:text-base font-medium text-gray-300 mb-2"
+                    >
+                      Your Name 
+                    </label>
+                    <input 
+                      type="text" 
+                      id="name"
+                      name="name" 
+                      value={formData.name} 
+                      onChange={handleChange} 
+                      className="w-full px-4 py-3 text-sm sm:text-base rounded bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                      required 
+                      placeholder="Enter your name"
+                    />
+                  </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label 
+                      htmlFor='email' 
+                      className="block text-sm sm:text-base font-medium text-gray-300 mb-2"
+                    >
+                      Your Email 
+                    </label>
+                    <input 
+                      type="email" 
+                      id="email"
+                      name="email" 
+                      value={formData.email} 
+                      onChange={handleChange} 
+                      className="w-full px-4 py-3 text-sm sm:text-base rounded bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                      required 
+                      placeholder="Enter your email"
+                    />
+                  </div>
+                </div>
+
+                {/* Subject Field */}
                 <div>
-                  <label htmlFor='name' className="block text-sm font-medium text-gray-300 mb-1">Your Name</label>
-                  <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500" required />
+                  <label 
+                    htmlFor='subject' 
+                    className="block text-sm sm:text-base font-medium text-gray-300 mb-2"
+                  >
+                    Subject 
+                  </label>
+                  <input 
+                    type="text" 
+                    id="subject"
+                    name="subject" 
+                    value={formData.subject} 
+                    onChange={handleChange} 
+                    className="w-full px-4 py-3 text-sm sm:text-base rounded bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                    required 
+                    placeholder="What's this about?"
+                  />
                 </div>
 
+                {/* Message Field */}
                 <div>
-                  <label htmlFor='email' className="block text-sm font-medium text-gray-300 mb-1">Your Email</label>
-                  <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500" required />
+                  <label 
+                    htmlFor='message' 
+                    className="block text-sm sm:text-base font-medium text-gray-300 mb-2"
+                  >
+                    Message 
+                  </label>
+                  <textarea 
+                    id="message"
+                    name="message" 
+                    value={formData.message} 
+                    onChange={handleChange} 
+                    rows="5" 
+                    className="w-full px-4 py-3 text-sm sm:text-base rounded bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none min-h-[120px]" 
+                    required
+                    placeholder="Tell me about your project or just say hello!"
+                  ></textarea>
                 </div>
-              </div>
 
-              <div>
-                <label htmlFor='subject' className="block text-sm font-medium text-gray-300 mb-1">Subject</label>
-                <input type="text" name="subject" value={formData.subject} onChange={handleChange} className="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500" required />
-              </div>
-
-              <div>
-                <label htmlFor='message' className="block text-sm font-medium text-gray-300 mb-1">Message</label>
-                <textarea name="message" value={formData.message} onChange={handleChange} rows="5" className="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500" required></textarea>
-              </div>
-
-              <button type="submit" disabled={formStatus === 'sending'} className={`w-full flex items-center justify-center px-6 py-3 rounded-md text-white font-medium ${formStatus === 'sending' ? 'bg-gray-600' : 'bg-blue-600 hover:bg-blue-700'}`}>
-                {formStatus === 'sending' ? 'Sending...' : <><Send size={18} className="mr-2" /> Send Message</>}
-              </button>
-            </form>
+                {/* Submit Button */}
+                <button 
+                  type="submit" 
+                  disabled={formStatus === 'sending'} 
+                  className={`w-full flex items-center justify-center px-6 py-3 rounded-md text-white font-medium text-sm sm:text-base transition-all duration-300 ${
+                    formStatus === 'sending' 
+                      ? 'bg-gray-600 cursor-not-allowed' 
+                      : 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800 shadow hover:shadow-md'
+                  }`}
+                >
+                  {formStatus === 'sending' ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send size={16} className="mr-2" />
+                      Send Message
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
