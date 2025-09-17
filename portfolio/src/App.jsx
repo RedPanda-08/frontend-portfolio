@@ -1,6 +1,7 @@
 import React from "react";
 import "./index.css";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import ReactGA from "react-ga4";
 import LandingPage from "./components/LandingPage.jsx";
 import AboutMe from "../src/components/aboutme.jsx";
@@ -23,6 +24,16 @@ function MainApp() {
   ReactGA.initialize("G-K3HPQR3MY2"); 
   ReactGA.send("pageview");
 
+  useEffect(() => {
+    // Check production via Vite env
+    if (import.meta.env.VITE_NODE_ENV === "production") {
+      fetch("https://portfolio-backend-1-eogw.onrender.com/api/track/visit", {
+        method: "POST"
+      })
+      .then(() => console.log("Portfolio visit tracked"))
+      .catch(err => console.error("Error tracking visit:", err));
+    }
+  }, []);
 
   return (
     <>
