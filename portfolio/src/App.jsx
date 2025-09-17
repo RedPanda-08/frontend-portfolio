@@ -1,6 +1,7 @@
 import React from "react";
 import "./index.css";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import ReactGA from "react-ga4";
 import LandingPage from "./components/LandingPage.jsx";
 import AboutMe from "../src/components/aboutme.jsx";
 import Projects from "../src/components/Projects.jsx";
@@ -18,6 +19,9 @@ export default function App() {
 function MainApp() {
   const location = useLocation();
   const isLandingPage = location.pathname === "/";
+  
+  ReactGA.initialize("G-K3HPQR3MY2"); 
+  ReactGA.send("pageview");
 
 
   return (

@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import "../index.css";
 import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
