@@ -206,7 +206,7 @@ export default function AboutMe() {
                 fontWeight: 500,
                 color: C.statusGreen,
                 letterSpacing: "0.06em",
-                textTransform: "uppercase"
+                textTransform: "uppercase",
               }}>
                 <span className="pulse-dot" style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: C.statusGreen, display: "inline-block" }} />
                 Available for Opportunities
@@ -278,60 +278,74 @@ export default function AboutMe() {
               <span>Based in Hyderabad</span>
             </div>
           </motion.section>
-
-          {/* EDUCATION TIMELINE COMPONENT */}
+            {/* EDUCATION TIMELINE COMPONENT - FIXED ANIMATION */}
           <motion.section 
-            initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUp}
+            initial="hidden" 
+            whileInView="visible" 
+            viewport={{ once: true, amount: 0.2 }} // Increased amount to trigger earlier
+            variants={{
+              hidden: { opacity: 0 },
+              visible: { opacity: 1, transition: { staggerChildren: 0.2 } } // Staggers the timeline items
+            }}
             style={{
               gridColumn: windowWidth > 992 ? "span 2" : "auto",
               background: C.surface,
               border: `1px solid ${C.border}`,
               borderRadius: "4px",
-              padding: "clamp(1.5rem, 4vw, 2.5rem)",
+              padding: "clamp(2rem, 5vw, 4rem)",
               boxSizing: "border-box",
               boxShadow: "0 4px 30px rgba(0, 0, 0, 0.4)",
-              transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "rgba(180, 170, 255, 0.35)";
-              e.currentTarget.style.backgroundColor = C.surfaceHover;
-              e.currentTarget.style.boxShadow = "0 20px 40px -15px rgba(0, 0, 0, 0.6)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = C.border;
-              e.currentTarget.style.backgroundColor = C.surface;
-              e.currentTarget.style.boxShadow = "0 4px 30px rgba(0, 0, 0, 0.4)";
+              overflow: "hidden"
             }}
           >
-            <div style={{ marginBottom: "2.5rem" }}>
+            <motion.div variants={fadeUp} style={{ marginBottom: "3rem" }}>
               <Label>History</Label>
               <h2 style={sH2}>Educational Journey</h2>
-            </div>
+            </motion.div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+            <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: "3rem" }}>
+              {/* Animated Spine Line */}
+              <motion.div 
+                initial={{ height: 0 }}
+                whileInView={{ height: "100%" }}
+                transition={{ duration: 1.5, ease: "easeInOut" }}
+                style={{ 
+                  position: "absolute", left: "6px", top: "10px", 
+                  width: "1px", background: "rgba(180, 170, 255, 0.4)" 
+                }} 
+              />
+
               {educationData.map((edu, i) => (
-                <div key={i} style={{
-                  display: "grid",
-                  gridTemplateColumns: windowWidth > 768 ? "1.2fr 2.5fr 0.3fr" : "1fr",
-                  gap: windowWidth > 768 ? "2rem" : "0.75rem",
-                  alignItems: "start",
-                  paddingBottom: "1.5rem",
-                  borderBottom: i !== educationData.length - 1 ? `1px solid ${C.border}` : "none",
-                  boxSizing: "border-box"
-                }}>
-                  <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: "0.95rem", fontWeight: 500, color: C.accent, marginTop: "2px" }}>{edu.year}</span>
-                  <div style={{ fontFamily: "'Outfit', sans-serif", display: "flex", flexDirection: "column", gap: "0.4rem" }}>
-                    <h3 style={{ fontSize: "1.15rem", fontWeight: 500, color: C.text, margin: 0 }}>{edu.degree}</h3>
-                    <h4 style={{ fontSize: "0.9rem", fontWeight: 400, color: C.muted, margin: 0 }}>{edu.institution}</h4>
-                    <p style={{ fontSize: "0.88rem", color: C.muted, lineHeight: 1.5, margin: "0.3rem 0 0 0", fontWeight: 300 }}>{edu.description}</p>
+                <motion.div 
+                  key={i} 
+                  variants={fadeUp} // This now triggers for each item inside the container
+                  style={{ position: "relative", paddingLeft: "2.5rem" }}
+                >
+                  {/* Animated Pulse Anchor */}
+                  <motion.div 
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    transition={{ delay: 0.2 + (i * 0.2), type: "spring" }}
+                    style={{ 
+                      position: "absolute", left: "0px", top: "4px", 
+                      width: "13px", height: "13px", borderRadius: "50%", 
+                      background: C.bg, border: `2px solid ${C.accent}`,
+                      boxShadow: `0 0 15px ${C.accent}` 
+                    }} 
+                  />
+
+                  <div className="timeline-content">
+                    <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: "0.75rem", color: C.accent, letterSpacing: "0.2em", textTransform: "uppercase" }}>{edu.year}</span>
+                    <h3 style={{ fontSize: "1.3rem", fontWeight: 500, color: C.text, margin: "0.4rem 0 0.2rem 0" }}>{edu.degree}</h3>
+                    <h4 style={{ fontSize: "0.9rem", fontWeight: 400, color: C.muted, margin: 0, opacity: 0.8 }}>{edu.institution}</h4>
+                    <p style={{ fontSize: "0.9rem", color: C.muted, lineHeight: 1.6, marginTop: "0.8rem", maxWidth: "550px", fontWeight: 300 }}>{edu.description}</p>
                   </div>
-                  {windowWidth > 768 && (
-                    <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: "0.8rem", color: C.dim, textAlign: "right", marginTop: "2px" }}>{edu.index}</span>
-                  )}
-                </div>
+                </motion.div>
               ))}
             </div>
           </motion.section>
+
+        
 
           {/* PHILOSOPHY CARD */}
           <motion.section 
