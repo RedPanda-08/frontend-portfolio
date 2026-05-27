@@ -6,172 +6,187 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  // Update mobile state on window resize
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth >= 768) setIsOpen(false); // Close menu on desktop
+      if (window.innerWidth >= 768) setIsOpen(false);
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
-    <nav className="fixed tracking-wide top-0 left-0 w-full bg-black text-white p-4 shadow-md z-50 flex justify-between items-center">
-      <h1
-        className="text-2xl font-bold cookie-font"
-        style={{ textShadow: "0 0 15px rgba(255,255,255,0.5)" }}
+    <nav 
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        zIndex: 100,
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "1.1rem clamp(1.5rem, 6vw, 4rem)",
+        borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
+        backgroundColor: "rgba(13, 14, 21, 0.75)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        boxSizing: "border-box",
+      }}
+    >
+      {/* Brand Monogram Identity */}
+      <span
+        style={{
+          fontFamily: "'Playfair Display', Georgia, serif",
+          fontStyle: "italic",
+          fontWeight: 400,
+          fontSize: "1.1rem",
+          color: "#ffffff",
+          letterSpacing: "0.02em",
+          userSelect: "none"
+        }}
       >
-        Navraj Singh's Portfolio
-      </h1>
+        Navraj Singh
+      </span>
 
-      {/* Hamburger Menu (Mobile) */}
+      {/* Hamburger Toggle (Mobile Viewports) */}
       {isMobile && (
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="ml-auto p-2 focus:outline-none"
-          aria-label="Toggle menu"
+          style={{
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+            padding: "0.5rem",
+            display: "flex",
+            flexDirection: "column",
+            gap: "5px",
+            outline: "none"
+          }}
+          aria-label="Toggle Navigation Grid"
         >
-          <div className="w-6 flex flex-col gap-1">
-            <span className={`h-0.5 bg-white transition-all ${isOpen ? "rotate-45 translate-y-1.5" : ""}`}></span>
-            <span className={`h-0.5 bg-white transition-all ${isOpen ? "opacity-0" : ""}`}></span>
-            <span className={`h-0.5 bg-white transition-all ${isOpen ? "-rotate-45 -translate-y-1.5" : ""}`}></span>
-          </div>
+          <span style={{ display: "block", width: "22px", height: "1px", backgroundColor: "#ffffff", transition: "transform 0.25s ease", transform: isOpen ? "translateY(6px) rotate(45deg)" : "none" }} />
+          <span style={{ display: "block", width: "22px", height: "1px", backgroundColor: "#ffffff", transition: "opacity 0.2s ease", opacity: isOpen ? 0 : 1 }} />
+          <span style={{ display: "block", width: "22px", height: "1px", backgroundColor: "#ffffff", transition: "transform 0.25s ease", transform: isOpen ? "translateY(-6px) rotate(-45deg)" : "none" }} />
         </button>
       )}
 
-      {/* Desktop Links */}
+      {/* Desktop Navigation Links */}
       {!isMobile && (
-        <div className="ml-auto flex space-x-6">
-          <NavLink to="/" currentPath={location.pathname}>
-            &#127968; Home
-          </NavLink>
-          <NavLink to="/about" currentPath={location.pathname}>
-            &#129489; About Me
-          </NavLink>
-          <NavLink to="/projects" currentPath={location.pathname}>
-            &#128640; Projects
-          </NavLink>
-          <NavLink to="/contact" currentPath={location.pathname}>
-            &#128231; Contact Me
-          </NavLink>
+        <div style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
+          <NavLink to="/" currentPath={location.pathname}>Home</NavLink>
+          <NavLink to="/about" currentPath={location.pathname}>About</NavLink>
+          <NavLink to="/projects" currentPath={location.pathname}>Projects</NavLink>
+          <NavLink to="/contact" currentPath={location.pathname}>Contact</NavLink>
         </div>
       )}
 
-      {/* Mobile Menu (Dropdown) */}
+      {/* Mobile Modular Grid Dropdown Menu */}
       {isMobile && isOpen && (
-        <div className="absolute top-full left-0 w-full bg-black py-4 px-6 shadow-lg flex flex-col gap-4">
-          <MobileNavLink to="/" currentPath={location.pathname} onClick={() => setIsOpen(false)}>
-            &#127968; Home
-          </MobileNavLink>
-          <MobileNavLink to="/about" currentPath={location.pathname} onClick={() => setIsOpen(false)}>
-            &#129489; About Me
-          </MobileNavLink>
-          <MobileNavLink to="/projects" currentPath={location.pathname} onClick={() => setIsOpen(false)}>
-            &#128640; Projects
-          </MobileNavLink>
-          <MobileNavLink to="/contact" currentPath={location.pathname} onClick={() => setIsOpen(false)}>
-            &#128231; Contact Me
-          </MobileNavLink>
+        <div 
+          style={{
+            position: "absolute",
+            top: "100%",
+            left: 0,
+            width: "100%",
+            backgroundColor: "rgba(13, 14, 21, 0.98)",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
+            padding: "1.5rem 2rem",
+            display: "flex",
+            flexDirection: "column",
+            gap: "1.25rem",
+            boxSizing: "border-box",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)"
+          }}
+        >
+          <MobileNavLink to="/" currentPath={location.pathname} onClick={() => setIsOpen(false)}>Home</MobileNavLink>
+          <MobileNavLink to="/about" currentPath={location.pathname} onClick={() => setIsOpen(false)}>About</MobileNavLink>
+          <MobileNavLink to="/projects" currentPath={location.pathname} onClick={() => setIsOpen(false)}>Projects</MobileNavLink>
+          <MobileNavLink to="/contact" currentPath={location.pathname} onClick={() => setIsOpen(false)}>Contact</MobileNavLink>
         </div>
       )}
 
-      {/* Styles */}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cookie&display=swap');
+      {/* Global CSS Stylesheet Scope Injection */}
+      <style jsx>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Outfit:wght@300;400;500&display=swap');
 
-        .cookie-font {
-          font-family: 'Cookie', cursive;
-          font-size: 2rem;
-        }
-
-        /* Desktop NavLink */
-        .nav-link {
-          position: relative;
-          font-size: 1.1rem;
-          padding: 0.5rem 1rem;
-          transition: all 0.3s ease-in-out;
+        .nav-anchor {
+          font-family: "'Outfit', sans-serif";
+          font-size: 0.8rem;
+          font-weight: 400;
+          text-transform: uppercase;
+          letter-spacing: 0.14em;
+          color: rgba(255, 255, 255, 0.35);
           text-decoration: none;
+          position: relative;
+          padding: 0.4rem 0;
+          transition: color 0.25s ease;
         }
 
-        .nav-link:hover {
-          background: white;
-          color: black;
-          border-radius: 10px;
-          box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        .nav-anchor:hover, .nav-anchor.active {
+          color: #ffffff;
         }
 
-        .nav-link::before {
+        /* High-fidelity custom underline metric */
+        .nav-anchor::after {
           content: "";
           position: absolute;
-          bottom: -5px;
+          bottom: 0;
           left: 50%;
-          width: 0%;
-          height: 3px;
-          background-color: white;
-          transition: all 0.3s ease-in-out;
+          width: 0;
+          height: 1px;
+          background-color: rgba(180, 170, 255, 0.8);
+          transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .nav-link:hover::before {
+        .nav-anchor:hover::after {
           width: 100%;
           left: 0;
         }
 
-        .nav-link.active::before {
-          width: 100%;
-          left: 0;
-          background-color: white;
-          height: 3px;
+        .nav-anchor.active::after {
+          width: 16px;
+          left: calc(50% - 8px);
+          background-color: rgba(180, 170, 255, 1);
         }
 
-        .nav-link.active {
-          text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        /* Mobile Utility Specific Classes */
+        .mobile-nav-anchor {
+          font-family: "'Outfit', sans-serif";
+          font-size: 0.9rem;
+          font-weight: 400;
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          color: rgba(255, 255, 255, 0.45);
+          text-decoration: none;
+          padding: 0.25rem 0;
+          transition: all 0.2s ease;
+          display: block;
         }
 
-        /* Mobile NavLink */
-        .mobile-nav-link {
-          padding: 0.75rem 0;
-          font-size: 1.2rem;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-          transition: all 0.3s;
-        }
-
-        .mobile-nav-link:hover {
-          color: #ddd;
-          padding-left: 0.5rem;
-        }
-
-        .mobile-nav-link.active {
-          color: white;
-          font-weight: bold;
-          text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
-        }
-
-        @media (max-width: 768px) {
-          .cookie-font {
-            font-size: 1.5rem;
-          }
+        .mobile-nav-anchor:hover, .mobile-nav-anchor.active {
+          color: rgba(180, 170, 255, 1);
+          padding-left: 4px;
         }
       `}</style>
     </nav>
   );
 }
 
-// Reusable NavLink component (Desktop)
 const NavLink = ({ to, currentPath, children }) => (
   <Link
     to={to}
-    className={`nav-link ${currentPath === to ? "active" : ""}`}
+    className={`nav-anchor ${currentPath === to ? "active" : ""}`}
   >
     {children}
   </Link>
 );
 
-// Reusable MobileNavLink component
 const MobileNavLink = ({ to, currentPath, onClick, children }) => (
   <Link
     to={to}
-    className={`mobile-nav-link ${currentPath === to ? "active" : ""}`}
+    className={`mobile-nav-anchor ${currentPath === to ? "active" : ""}`}
     onClick={onClick}
   >
     {children}

@@ -1,21 +1,51 @@
-import React, { useEffect, useRef } from "react";
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useRef, useState } from "react";
 import Typed from "typed.js";
-import { FaGithub, FaLinkedin, FaTwitter, FaInstagram } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaInstagram, FaFileDownload } from "react-icons/fa";
 import { motion } from "framer-motion";
 import "../index.css";
-import developerimg from "../images/developerimg.jpg";
+
+const C = {
+  bg: "#090a0f", 
+  surface: "rgba(255, 255, 255, 0.025)",      // Enhanced backdrop opacity for solid presence
+  surfaceHover: "rgba(255, 255, 255, 0.045)", // Elevated hover definition
+  border: "rgba(255, 255, 255, 0.12)",       // Sharper border presence for maximum structural clarity
+  accent: "rgba(180, 170, 255, 0.85)", 
+  text: "#ffffff", 
+  muted: "rgba(255, 255, 255, 0.75)", 
+  dim: "rgba(180, 170, 255, 0.35)",
+  statusGreen: "#22c55e",
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 12 },
+  visible: (d = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, ease: "easeOut", delay: d },
+  }),
+};
+
 
 export default function AboutMe() {
   const typedRef = useRef(null);
   const containerRef = useRef(null);
+  const canvasRef = useRef(null);
+  const [windowWidth, setW] = useState(window.innerWidth);
 
   useEffect(() => {
-    document.body.style.overflow = "auto";
+    document.body.style.backgroundColor = C.bg;
+    document.body.style.overflowX = "hidden";
+    document.body.style.overflowY = "auto";
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
     window.scrollTo(0, 0);
 
-    // Typed.js initialization
+    const onResize = () => setW(window.innerWidth);
+    window.addEventListener("resize", onResize);
+
     const typed = new Typed(typedRef.current, {
-      strings: ["Aspiring Data Scientist", "Full Stack Developer", "Passionate Photographer"],
+      strings: ["Data Science Student", "Full Stack Developer", "Passionate Photographer"],
       typeSpeed: 60,
       backSpeed: 40,
       loop: true,
@@ -24,632 +54,423 @@ export default function AboutMe() {
       cursorChar: "|",
     });
 
-    // Force scroll recalculation
-    if (containerRef.current) {
-      // This forces a reflow/repaint
-      containerRef.current.style.overflowY = "hidden";
-      setTimeout(() => {
-        if (containerRef.current) {
-          containerRef.current.style.overflowY = "auto";
-        }
-      }, 10);
-    }
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    let cw = (canvas.width = window.innerWidth);
+    let ch = (canvas.height = window.innerHeight);
 
-    // // Make sure there's enough content to scroll
-    // document.body.style.minHeight = "101vh";
+    const handleCanvasResize = () => {
+      cw = canvas.width = window.innerWidth;
+      ch = canvas.height = window.innerHeight;
+      renderLighting();
+    };
+    window.addEventListener("resize", handleCanvasResize);
+
+    const renderLighting = () => {
+      ctx.clearRect(0, 0, cw, ch);
+      const primaryGlow = ctx.createRadialGradient(cw * 0.15, ch * 0.15, 0, cw * 0.15, ch * 0.15, Math.max(cw, ch) * 0.55);
+      primaryGlow.addColorStop(0, "rgba(145, 135, 245, 0.08)");
+      primaryGlow.addColorStop(0.5, "rgba(90, 85, 180, 0.01)");
+      primaryGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = primaryGlow;
+      ctx.fillRect(0, 0, cw, ch);
+    };
+
+    renderLighting();
 
     return () => {
       typed.destroy();
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("resize", handleCanvasResize);
     };
   }, []);
 
-  // Define your skills
   const skillsSet1 = [
-    { name: "React", color: "#61DAFB", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
-    { name: "JavaScript", color: "#F7DF1E", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" },
-    { name: "Python", color: "#3776AB", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
-    { name: "HTML5", color: "#E34F26", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" },
-    { name: "CSS3", color: "#1572B6", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" },
+    { name: "Next.js", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", invert: true },
+    { name: "React", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
+    { name: "FastAPI", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" },
+    { name: "Spring Boot", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" },
+    { name: "Python", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
   ];
-  
+
   const skillsSet2 = [
-    { name: "Express.js", color: "#ffffff", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" },
-    { name: "SQL", color: "#4479A1", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
-    { name: "Git", color: "#F05032", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" },
-    { name: "GitHub", color: "#FF6F00", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" },
-    { name: "Firebase", color: "#007ACC", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg" },
+    { name: "SQL", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
+    { name: "AWS", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg", invert: true },
+    { name: "Git", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" },
+    { name: "Express.js", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg", invert: true },
+    { name: "Firebase", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg" },
   ];
-  
+
   const educationData = [
     {
-      year: "2023 - 2027",
-      degree: " 🎓 B.Tech in Data Science",
-      institution: " 🏫 Malla Reddy University, Hyderabad, Telangana",
-      description: [
-        " 📌 Studying advanced concepts in:",
-        "- Data Science",
-        "- Software Development"
-      ],
+      index: "01",
+      year: "2023 – 2027",
+      degree: "B.Tech in Data Science",
+      institution: "Malla Reddy University, Hyderabad",
+      description: "Focusing on database architectures, machine learning models, and building backend systems. I spend most of my time figuring out how to connect data engineering routines with responsive full-stack applications."
     },
     {
-      year: "2021 - 2023",
-      degree: " 📜 Telangana State Board of Intermediate Education",
-      institution: " 🏫 Loyola Academy, Hyderabad, Telangana",
-      description: [
-        "📌 Specialized in Mathematics, Physics, and Chemistry (MPC).",
-        "Developed strong analytical and problem-solving skills."
-      ],
+      index: "02",
+      year: "2021 – 2023",
+      degree: "Intermediate Education (MPC)",
+      institution: "Loyola Academy, Hyderabad",
+      description: "Specialized in Mathematics, Physics, and Chemistry. This is where I picked up my logical habits, learning to handle algebraic problem-solving and systematic breakdown techniques early on."
     },
     {
-      year: "2013 - 2021",
-      degree: " 📜 Central Board of Secondary Education (CBSE)",
-      institution: " 🏫 Sadhu Vaswani International School, Hyderabad, Telangana",
-      description: [
-        " 📌 Built a strong foundation in:",
-        "- Mathematics & Science",
-        "- Computer Science & Logical Thinking",
-        "- Communication & Leadership Skills"
-      ],
-    },
+      index: "03",
+      year: "2013 – 2021",
+      degree: "Central Board of Secondary Education (CBSE)",
+      institution: "Sadhu Vaswani International School, Hyderabad",
+      description: "Completed my core schooling tracks with an early introduction to computer science modules, practical science labs, and foundational mathematics."
+    }
   ];
-  
+
   return (
-    <div 
+    <div
       ref={containerRef}
-      className="relative w-full min-h-screen flex flex-col items-center justify-start text-white p-20 animated-bg overflow-auto"
+      style={{ position: "relative", minHeight: "100vh", backgroundColor: C.bg, color: C.text, overflowX: "hidden" }}
     >
-      {/* Hero Content Container */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-        className="relative z-10 flex flex-col md:flex-row items-center justify-between w-full max-w-6xl gap-10 mb-24"
-      >
-        {/* Left Section - Animated Text */}
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-          className="w-full md:w-1/2"
-        >
-          <p className="text-4xl md:text-5xl font-bold font-poppins text-center md:text-left tracking-wide">
-            Hi, I'm <span className="soft-glow-blue">Navraj Singh</span>.<br />
-            I am a <span ref={typedRef} className="soft-glow-yellow inline"></span>
-          </p>
+      {/* Micro-Grain Film Overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          zIndex: 3,
+          opacity: 0.015,
+          mixBlendMode: "hard-light",
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='matteNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.98' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23matteNoise)'/%3E%3C/svg%3E")`,
+        }}
+      />
 
-          {/* Social Media Icons */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-            className="flex justify-center md:justify-start space-x-6 mt-6"
+      {/* Horizontal Guideline Spec Lines */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          zIndex: 1,
+          opacity: 0.012,
+          backgroundImage: `linear-gradient(to bottom, rgba(255,255,255,0.2) 1px, transparent 1px)`,
+          backgroundSize: "100% 60px",
+        }}
+      />
+
+      <canvas ref={canvasRef} style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none" }} />
+
+      <div style={{ position: "relative", zIndex: 4, maxWidth: 1100, margin: "0 auto", padding: "clamp(4rem, 8vw, 6rem) 1.5rem", boxSizing: "border-box" }}>
+        
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: windowWidth > 992 ? "repeat(3, 1fr)" : "1fr",
+          gap: "1.5rem",
+          width: "100%"
+        }}>
+          
+          {/* PROFILE CARD */}
+          <motion.section 
+            initial="hidden" animate="visible" variants={fadeUp} custom={0.1}
+            style={{
+              gridColumn: windowWidth > 992 ? "span 2" : "auto",
+              background: C.surface,
+              border: `1px solid ${C.border}`,
+              borderRadius: "4px",
+              padding: "clamp(2rem, 5vw, 3.5rem)",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              gap: "3rem",
+              boxSizing: "border-box",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.4)",
+              transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "rgba(180, 170, 255, 0.35)";
+              e.currentTarget.style.backgroundColor = C.surfaceHover;
+              e.currentTarget.style.boxShadow = "0 20px 40px -15px rgba(0, 0, 0, 0.6)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = C.border;
+              e.currentTarget.style.backgroundColor = C.surface;
+              e.currentTarget.style.boxShadow = "0 4px 30px rgba(0, 0, 0, 0.4)";
+            }}
           >
-            <a href="https://github.com/" target="_blank" rel="noopener noreferrer" className="social-icon">
-              <FaGithub className="text-3xl md:text-4xl bg-transparent rounded-full" />
-            </a>
-            <a href="https://linkedin.com/in/" target="_blank" rel="noopener noreferrer" className="social-icon">
-              <FaLinkedin className="text-3xl md:text-4xl bg-transparent rounded-full text-blue-600" />
-            </a>
-            <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" className="social-icon">
-              <FaInstagram className="text-3xl md:text-4xl bg-transparent rounded-full text-pink-500" />
-            </a>
-          </motion.div>
-        </motion.div>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "1rem" }}>
+              <div style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.55rem",
+                padding: "0.4rem 0.85rem",
+                background: "rgba(34, 197, 94, 0.06)",
+                border: "1px solid rgba(34, 197, 94, 0.3)",
+                borderRadius: "30px",
+                fontFamily: "'Outfit', sans-serif",
+                fontSize: "0.72rem",
+                fontWeight: 500,
+                color: C.statusGreen,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase"
+              }}>
+                <span className="pulse-dot" style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: C.statusGreen, display: "inline-block" }} />
+                Available for Opportunities
+              </div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-          className="w-full md:w-1/2 flex justify-center items-center"
-        >
-          <div className="image-container mt-10">
-            <img
-              src={developerimg}
-              alt="Developer"
-              className="developer-img rounded-xl w-80 md:w-80 object-cover"
-            />
-          </div>
-        </motion.div>
-      </motion.div>
+              <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: "clamp(2.5rem, 5vw, 4rem)", lineHeight: 1.1, letterSpacing: "-0.01em", color: C.text, margin: 0 }}>
+                Hi, I'm Navraj <span style={{ fontStyle: "italic", fontWeight: 400, color: C.accent }}>Singh</span>.
+              </h1>
 
-      {/* Skills Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.3, ease: "easeOut" }}
-        className="w-full max-w-6xl mb-32"
-      >
-        <h2 className="text-4xl font-bold text-center mb-8 skills-heading">
-          <span className="soft-glow-blue">My</span> <span className="soft-glow-yellow">Skills</span>
-        </h2>
-
-        <div className="skills-container">
-          <div className="skills-wrapper">
-            {/* First row of skills scrolling left to right */}
-            <div className="skills-track track-1">
-              {[...skillsSet1, ...skillsSet1].map((skill, index) => (
-                <div 
-                  key={`skill1-${index}`} 
-                  className="skill-pill" 
-                  style={{
-                    backgroundColor: `${skill.color}15`,
-                    border: `2px solid ${skill.color}`
-                  }}
-                >
-                  <img 
-                    src={skill.logo} 
-                    alt={`${skill.name} logo`} 
-                    className="skill-logo" 
-                  />
-                  <span style={{ color: skill.color }}>{skill.name}</span>
-                </div>
-              ))}
+              <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: "clamp(1.1rem, 2vw, 1.35rem)", fontWeight: 300, color: C.muted, margin: 0, minHeight: "1.5em", letterSpacing: "0.01em" }}>
+                I am a <span ref={typedRef} style={{ color: C.text, fontWeight: 400 }} />
+              </p>
             </div>
-            
-            {/* Second row of skills scrolling right to left */}
-            <div className="skills-track track-2">
-              {[...skillsSet2, ...skillsSet2].map((skill, index) => (
-                <div 
-                  key={`skill2-${index}`} 
-                  className="skill-pill" 
-                  style={{
-                    backgroundColor: `${skill.color}15`,
-                    border: `2px solid ${skill.color}`
-                  }}
-                >
-                  <img 
-                    src={skill.logo} 
-                    alt={`${skill.name} logo`} 
-                    className="skill-logo" 
-                  />
-                  <span style={{ color: skill.color }}>{skill.name}</span>
-                </div>
-              ))}
+
+            <div style={{ display: "flex", alignItems: "center", gap: "2.5rem", flexWrap: "wrap" }}>
+              <div style={{ display: "flex", gap: "1.5rem" }}>
+                {[
+                  { icon: <FaGithub size={19} />, href: "https://github.com/RedPanda-08?tab=repositories" },
+                  { icon: <FaLinkedin size={19} />, href: "https://linkedin.com/in/navraj-singh-kalsi-448a30283/" },
+                  { icon: <FaInstagram size={19} />, href: "https://instagram.com/" },
+                ].map(({ icon, href }) => (
+                  <a key={href} href={href} target="_blank" rel="noopener noreferrer" style={{ color: C.muted, transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = C.accent} onMouseLeave={e => e.currentTarget.style.color = C.muted}>{icon}</a>
+                ))}
+              </div>
+
+              <a href="/resume.pdf" download="Navraj_Singh_Resume.pdf" style={{ textDecoration: "none" }}>
+                <button style={{ display: "inline-flex", alignItems: "center", gap: "0.6rem", fontFamily: "'Outfit', sans-serif", fontSize: "0.78rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.15em", color: "#ffffff", background: "rgba(180, 170, 255, 0.04)", border: `1px solid rgba(180, 170, 255, 0.45)`, borderRadius: "4px", padding: "0.75rem 1.8rem", cursor: "pointer", transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)" }} onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.accent; e.currentTarget.style.backgroundColor = "rgba(180, 170, 255, 0.15)"; e.currentTarget.style.transform = "translateY(-1px)"; }} onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(180, 170, 255, 0.45)"; e.currentTarget.style.backgroundColor = "rgba(180, 170, 255, 0.04)"; e.currentTarget.style.transform = "translateY(0)"; }}>
+                  <FaFileDownload size={12} /> Download Resume
+                </button>
+              </a>
             </div>
-          </div>
-        </div>
-      </motion.div>
+          </motion.section>
 
-      {/* Education Section */}
-      <motion.div 
-        className="education-container w-full max-w-6xl"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-      >
-        <h2 className="text-4xl font-bold text-left mb-8 skills-heading">
-          <span className="soft-glow-blue">My</span> <span className="soft-glow-yellow">Educational Journey</span>
-        </h2>
+          {/* FOCUS CARD */}
+          <motion.section 
+            initial="hidden" animate="visible" variants={fadeUp} custom={0.18}
+            style={{
+              background: C.surface,
+              border: `1px solid ${C.border}`,
+              borderRadius: "4px",
+              padding: "2rem",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              gap: "2rem",
+              boxSizing: "border-box",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.4)",
+              transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "rgba(180, 170, 255, 0.35)";
+              e.currentTarget.style.backgroundColor = C.surfaceHover;
+              e.currentTarget.style.boxShadow = "0 20px 40px -15px rgba(0, 0, 0, 0.6)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = C.border;
+              e.currentTarget.style.backgroundColor = C.surface;
+              e.currentTarget.style.boxShadow = "0 4px 30px rgba(0, 0, 0, 0.4)";
+            }}
+          >
+            <Label>My Focus</Label>
+            <div style={{ fontFamily: "'Outfit', sans-serif" }}>
+              <p style={{ fontSize: "0.95rem", color: C.text, lineHeight: 1.6, margin: 0, fontWeight: 300 }}>
+                I specialize in bridging Full-Stack development with data-driven backends. I love building responsive user interfaces, optimized data processing routines, and reliable engineering structures that keep applications fluid and fast.
+              </p>
+            </div>
+            <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: "1rem", display: "flex", justifyContent: "space-between", fontFamily: "'Outfit', sans-serif", fontSize: "0.75rem", color: C.muted }}>
+              <span>Status: Active</span>
+              <span>Based in Hyderabad</span>
+            </div>
+          </motion.section>
 
-        <div className="timeline">
-          {educationData.map((edu, index) => (
-            <motion.div
-              key={index}
-              className={`timeline-item ${index % 2 === 0 ? "left" : "right"}`}
-              variants={{
-                hidden: { opacity: 0, y: 50 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: index * 0.3 } }
-              }}
-            >
-              <div className="timeline-dot"></div>
-              <div className="timeline-content">
-                <h3 className="timeline-year">{edu.year}</h3>
-                <h4 className="timeline-degree">{edu.degree}</h4>
-                <p className="timeline-institution">{edu.institution}</p>
-                <div className="timeline-description">
-                  {Array.isArray(edu.description) ? (
-                    edu.description.map((desc, i) => (
-                      <p key={i}>{desc}</p>
-                    ))
-                  ) : (
-                    <p>{edu.description}</p>
+          {/* EDUCATION TIMELINE COMPONENT */}
+          <motion.section 
+            initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUp}
+            style={{
+              gridColumn: windowWidth > 992 ? "span 2" : "auto",
+              background: C.surface,
+              border: `1px solid ${C.border}`,
+              borderRadius: "4px",
+              padding: "clamp(1.5rem, 4vw, 2.5rem)",
+              boxSizing: "border-box",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.4)",
+              transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "rgba(180, 170, 255, 0.35)";
+              e.currentTarget.style.backgroundColor = C.surfaceHover;
+              e.currentTarget.style.boxShadow = "0 20px 40px -15px rgba(0, 0, 0, 0.6)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = C.border;
+              e.currentTarget.style.backgroundColor = C.surface;
+              e.currentTarget.style.boxShadow = "0 4px 30px rgba(0, 0, 0, 0.4)";
+            }}
+          >
+            <div style={{ marginBottom: "2.5rem" }}>
+              <Label>History</Label>
+              <h2 style={sH2}>Educational Journey</h2>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+              {educationData.map((edu, i) => (
+                <div key={i} style={{
+                  display: "grid",
+                  gridTemplateColumns: windowWidth > 768 ? "1.2fr 2.5fr 0.3fr" : "1fr",
+                  gap: windowWidth > 768 ? "2rem" : "0.75rem",
+                  alignItems: "start",
+                  paddingBottom: "1.5rem",
+                  borderBottom: i !== educationData.length - 1 ? `1px solid ${C.border}` : "none",
+                  boxSizing: "border-box"
+                }}>
+                  <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: "0.95rem", fontWeight: 500, color: C.accent, marginTop: "2px" }}>{edu.year}</span>
+                  <div style={{ fontFamily: "'Outfit', sans-serif", display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                    <h3 style={{ fontSize: "1.15rem", fontWeight: 500, color: C.text, margin: 0 }}>{edu.degree}</h3>
+                    <h4 style={{ fontSize: "0.9rem", fontWeight: 400, color: C.muted, margin: 0 }}>{edu.institution}</h4>
+                    <p style={{ fontSize: "0.88rem", color: C.muted, lineHeight: 1.5, margin: "0.3rem 0 0 0", fontWeight: 300 }}>{edu.description}</p>
+                  </div>
+                  {windowWidth > 768 && (
+                    <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: "0.8rem", color: C.dim, textAlign: "right", marginTop: "2px" }}>{edu.index}</span>
                   )}
                 </div>
+              ))}
+            </div>
+          </motion.section>
+
+          {/* PHILOSOPHY CARD */}
+          <motion.section 
+            initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUp}
+            style={{
+              background: C.surface,
+              border: `1px solid ${C.border}`,
+              borderRadius: "4px",
+              padding: "2rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "2rem",
+              boxSizing: "border-box",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.4)",
+              transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "rgba(180, 170, 255, 0.35)";
+              e.currentTarget.style.backgroundColor = C.surfaceHover;
+              e.currentTarget.style.boxShadow = "0 20px 40px -15px rgba(0, 0, 0, 0.6)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = C.border;
+              e.currentTarget.style.backgroundColor = C.surface;
+              e.currentTarget.style.boxShadow = "0 4px 30px rgba(0, 0, 0, 0.4)";
+            }}
+          >
+            <Label>Philosophy</Label>
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", fontFamily: "'Outfit', sans-serif" }}>
+              <div>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontSize: "1.15rem", color: C.text, margin: "0 0 0.4rem 0", fontWeight: 400 }}>Reliable Code</h3>
+                <p style={{ fontSize: "0.9rem", color: C.muted, lineHeight: 1.55, margin: 0, fontWeight: 300 }}>
+                  I believe in catching issues early. I write clean validation schemas and robust data configurations to organize logic long before it ever enters production modules.
+                </p>
               </div>
-            </motion.div>
-          ))}
+              <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: "1.5rem" }}>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontSize: "1.15rem", color: C.text, margin: "0 0 0.4rem 0", fontWeight: 400 }}>Keeping Things Lean</h3>
+                <p style={{ fontSize: "0.9rem", color: C.muted, lineHeight: 1.55, margin: 0, fontWeight: 300 }}>
+                  I maintain rapid backend performance by leveraging lightweight, native libraries. Keeping architectures highly cohesive means fewer things break under load.
+                </p>
+              </div>
+              <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: "1.5rem" }}>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontSize: "1.15rem", color: C.text, margin: "0 0 0.4rem 0", fontWeight: 400 }}>Team Collaboration</h3>
+                <p style={{ fontSize: "0.9rem", color: C.muted, lineHeight: 1.55, margin: 0, fontWeight: 300 }}>
+                  Great software isn't built in a vacuum. I value jumping into code reviews, brainstorming edge-cases with teammates, and keeping documentation straightforward so anyone can spin up the environment quickly.
+                </p>
+              </div>
+            </div>
+          </motion.section>
+
+          {/* INFINITE SCROLLING SKILLS TRACK */}
+          <motion.section 
+            initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUp}
+            style={{
+              gridColumn: windowWidth > 992 ? "span 3" : "auto",
+              background: C.surface,
+              border: `1px solid ${C.border}`,
+              borderRadius: "4px",
+              padding: "2rem 0",
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.8rem",
+              boxSizing: "border-box",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.4)"
+            }}
+          >
+            <div style={{ padding: "0 2rem", marginBottom: "0.5rem" }}>
+              <Label>Capabilities</Label>
+            </div>
+
+            <div style={{ display: "flex", width: "max-content" }} className="ticker-track-forward">
+              {[...skillsSet1, ...skillsSet1, ...skillsSet1, ...skillsSet1].map((sk, i) => (
+                <div key={`f-${i}`} style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.55rem 1.2rem", background: "rgba(255,255,255,0.02)", border: `1px solid ${C.border}`, borderRadius: "4px", fontFamily: "'Outfit', sans-serif", fontSize: "0.85rem", color: C.text, margin: "0 0.4rem" }}>
+                  <img src={sk.logo} alt="" style={{ width: 14, height: 14, objectFit: "contain", filter: sk.invert ? "invert(1) opacity(0.6)" : "opacity(0.85)" }} />
+                  <span>{sk.name}</span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: "flex", width: "max-content" }} className="ticker-track-backward">
+              {[...skillsSet2, ...skillsSet2, ...skillsSet2, ...skillsSet2].map((sk, i) => (
+                <div key={`r-${i}`} style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.55rem 1.2rem", background: "rgba(255,255,255,0.02)", border: `1px solid ${C.border}`, borderRadius: "4px", fontFamily: "'Outfit', sans-serif", fontSize: "0.85rem", color: C.text, margin: "0 0.4rem" }}>
+                  <img src={sk.logo} alt="" style={{ width: 14, height: 14, objectFit: "contain", filter: sk.invert ? "invert(1) opacity(0.6)" : "opacity(0.85)" }} />
+                  <span>{sk.name}</span>
+                </div>
+              ))}
+            </div>
+          </motion.section>
+
         </div>
-      </motion.div>
 
+        <footer style={{ borderTop: `1px solid ${C.border}`, marginTop: "4rem", paddingTop: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: "'Outfit', sans-serif", fontSize: "0.75rem", color: C.dim, letterSpacing: "0.02em" }}>
+          <span>© {new Date().getFullYear()} Navraj Singh</span>
+          <span>Full Stack Developer | Data Scientist</span>
+        </footer>
 
-      {/* Add extra content to ensure there's something to scroll */}
-      <div className="h-64"></div>
+      </div>
 
-      {/* Custom Styles */}
       <style jsx>{`
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
-        /* Background Animation */
-        @keyframes backgroundFade {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Outfit:wght@300;400;500&display=swap');
+        .typed-cursor { color: ${C.accent}; font-weight: 300; }
+        body { margin: 0; padding: 0; background: #090a0f; -webkit-font-smoothing: antialiased; }
+        
+        @keyframes scrollForward {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-25%); }
         }
-
-        .animated-bg {
-          background: linear-gradient(-45deg, #000000, #0a192f, #1c1c1c);
-          background-size: 400% 400%;
-          animation: backgroundFade 15s infinite ease-in-out;
+        @keyframes scrollBackward {
+          0% { transform: translateX(-25%); }
+          100% { transform: translateX(0); }
         }
+        .ticker-track-forward { animation: scrollForward 26s linear infinite; }
+        .ticker-track-backward { animation: scrollBackward 26s linear infinite; }
 
-        .font-poppins {
-          font-family: 'Poppins', sans-serif;
+        @keyframes subtlePulse {
+          0% { transform: scale(0.92); opacity: 0.6; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+          50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 8px 2px rgba(34, 197, 94, 0.25); }
+          100% { transform: scale(0.92); opacity: 0.6; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
         }
-
-        /* Glowing Text */
-        .soft-glow-blue {
-          color: #60a5fa;
-          text-shadow: 0 0 8px rgba(96, 165, 250, 0.8);
-        }
-
-        .soft-glow-yellow {
-          color: #facc15;
-          text-shadow: 0 0 8px rgba(250, 204, 21, 0.8);
-        }
-
-        /* Social Media Icon Styling */
-        .social-icon {
-          transition: transform 0.3s ease-in-out, filter 0.4s ease-in-out;
-        }
-
-        .social-icon:hover {
-          transform: scale(1.15);
-          filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.6));
-        }
-
-        /* Image Container & Effect */
-        .image-container {
-          position: relative;
-          border-radius: 12px;
-          padding: 6px;
-          background: linear-gradient(45deg, #60a5fa, #facc15);
-          box-shadow: 0 0 15px rgba(96, 165, 250, 0.4);
-          overflow: hidden;
-          animation: borderPulse 2s infinite alternate;
-        }
-
-        /* Developer Image Styling */
-        .developer-img {
-          transition: transform 0.5s ease-in-out;
-          height: auto;
-          aspect-ratio: 1/1;
-          object-position: center;
-          filter: contrast(1.05) brightness(1.05);
-        }
-
-        .image-container:hover .developer-img {
-          transform: scale(1.05);
-        }
-
-        /* Animated Border */
-        @keyframes borderPulse {
-          0% {
-            box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
-          }
-          50% {
-            box-shadow: 0 0 20px rgba(250, 204, 21, 0.6);
-          }
-          100% {
-            box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
-          }
-        }
-
-        /* Skills Section Styling */
-        .skills-heading {
-          position: relative;
-          display: inline-block;
-          padding-bottom: 15px;
-        }
-
-        .skills-heading::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 100px;
-          height: 4px;
-          background: linear-gradient(90deg, #60a5fa, #facc15);
-          border-radius: 2px;
-        }
-
-        .skills-container {
-          position: relative;
-          width: 100%;
-          overflow: hidden;
-          padding: 20px 0;
-          background: rgba(0, 0, 0, 0.2);
-          border-radius: 12px;
-          box-shadow: 0 0 20px rgba(3, 3, 3, 0.3);
-        }
-
-        .skills-wrapper {
-          display: flex;
-          flex-direction: column;
-          gap: 30px;
-          padding: 10px 0;
-        }
-
-        .skills-track {
-          display: flex;
-          gap: 20px;
-          white-space: nowrap;
-        }
-
-        .track-1 {
-          animation: scroll 25s linear infinite;
-        }
-
-        .track-2 {
-          animation: scroll-reverse 25s linear infinite;
-        }
-
-        /* Logo styling for skills */
-        .skill-logo {
-          width: 24px;
-          height: 24px;
-          margin-right: 8px;
-          object-fit: contain;
-          filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
-        }
-
-        .skill-pill {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 10px 20px;
-          border-radius: 50px;
-          font-weight: 600;
-          font-size: 16px;
-          letter-spacing: 0.5px;
-          box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        /* For the Express.js logo which may be difficult to see on dark background */
-        .skill-pill img[alt="Express.js logo"] {
-          filter: invert(1) drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
-        }
-
-        /* For GitHub logo which may be difficult to see */
-        .skill-pill img[alt="GitHub logo"] {
-          filter: invert(1) drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
-        }
-
-        .skill-pill:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-        }
-
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-
-        @keyframes scroll-reverse {
-          0% {
-            transform: translateX(-50%);
-          }
-          100% {
-            transform: translateX(0);
-          }
-        }
-
-        /* Timeline styling */
-        .timeline {
-          position: relative;
-          margin-top: 20px;
-        }
-
-        .timeline::before {
-          content: "";
-          position: absolute;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 4px;
-          height: 100%;
-          background: linear-gradient(to bottom, #60a5fa, #facc15);
-          border-radius: 2px;
-        }
-
-        .timeline-item {
-          position: relative;
-          width: 50%;
-          padding: 20px;
-        }
-
-        .timeline-dot {
-          position: absolute;
-          top: 30px;
-          width: 16px;
-          height: 16px;
-          background: #facc15;
-          border-radius: 50%;
-          z-index: 1;
-          box-shadow: 0 0 8px rgba(250, 204, 21, 0.8);
-        }
-
-        .timeline-item.left {
-          text-align: right;
-          left: 0;
-        }
-
-        .timeline-item.right {
-          left: 50%;
-        }
-
-        .timeline-item.left .timeline-dot {
-          right: -8px;
-        }
-
-        .timeline-item.right .timeline-dot {
-          left: -8px;
-        }
-
-        .timeline-content {
-          background: rgba(255, 255, 255, 0.1);
-          padding: 15px;
-          border-radius: 10px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-          transition: transform 0.3s ease-in-out;
-        }
-
-        .timeline-content:hover {
-          transform: scale(1.05);
-        }
-
-        .timeline-year {
-          display: block;
-          font-size: 1.2rem;
-          font-weight: bold;
-          color: #facc15;
-          margin-bottom: 10px;
-        }
-
-        .timeline-degree {
-          font-weight: bold;
-          color: #60a5fa;
-          margin-bottom: 5px;
-        }
-
-        .timeline-institution {
-          font-style: italic;
-          margin-bottom: 10px;
-        }
-
-        .timeline-description p {
-          margin-bottom: 5px;
-        }
-          @media (max-width: 768px) {
-            .timeline-item {
-              width: 100%;
-              left: 0 !important;
-              text-align: left !important;
-              padding-left: 40px;
-            }
-
-            .timeline::before {
-              left: 20px;
-            }
-
-            .timeline-dot {
-              left: 12px !important;
-              right: auto !important;
-            }
-          }
-
-
-        /* Media Queries */
-        @media (max-width: 768px) {
-            .timeline-single-column {
-              padding-left: 50px;
-            }
-            
-            .timeline-dot-single {
-              left: -20px;
-            }
-            
-            .timeline-content-single {
-              padding: 45px;
-            }
-
-          .image-container {
-            margin-top: 2rem;
-          }
-          
-          .skill-pill {
-            padding: 8px 16px;
-            font-size: 14px;
-          }
-
-          .skill-logo {
-            width: 20px;
-            height: 20px;
-            margin-right: 6px;
-          }
-        }
-
-        /* Styling for education cards */
-        .education-card {
-          background: rgba(255, 255, 255, 0.1);
-          padding: 20px;
-          border-radius: 10px;
-          box-shadow: 0 0 5px rgba(96, 165, 250, 0.3);
-          transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
-        }
-
-        /* Glowing effect on hover */
-        .education-card:hover {
-          box-shadow: 0 0 15px rgba(96, 165, 250, 0.7), 
-                      0 0 25px rgba(250, 204, 21, 0.5);
-          transform: translateY(-3px);
-          footer {
-            text-align: center;
-            padding: 10px;
-            background: #222;
-            margin-top: 2rem;
-            color: white;
-            font-size: 14px;
-        }
-        }
+        .pulse-dot { animation: subtlePulse 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
       `}</style>
-
-      <motion.div
-  initial={{ opacity: 0 }}
-  animate={{ opacity: 1 }}
-  transition={{ duration: 0.8, delay: 0.8 }}
-  className="w-full max-w-6xl mt-16 mb-4 text-center"
->
-  <div className="copyright-container">
-    <p className="copyright-text">
-      © {new Date().getFullYear()} Navraj Singh. All Rights Reserved.
-    </p>
-    <p className="copyright-subtitle">
-      Made with <span className="heart">❤️</span> and React+Vite
-    </p>
-  </div>
-
-  {/* Add this to your existing style jsx section */}
-  <style jsx>{`
-    /* Copyright Styles */
-    .copyright-container {
-      padding: 20px;
-      border-top: 1px solid rgba(96, 165, 250, 0.2);
-    }
-
-    .copyright-text {
-      font-size: 0.9rem;
-      color: #9ca3af;
-      margin-bottom: 4px;
-    }
-
-    .copyright-subtitle {
-      font-size: 0.8rem;
-      color: #6b7280;
-    }
-
-    .heart {
-      color: #ef4444;
-      display: inline-block;
-      animation: heartbeat 1.5s infinite;
-    }
-
-    @keyframes heartbeat {
-      0% { transform: scale(1); }
-      5% { transform: scale(1.25); }
-      10% { transform: scale(1); }
-      15% { transform: scale(1.25); }
-      20% { transform: scale(1); }
-      100% { transform: scale(1); }
-    }
-    
-}
-  `}</style>
-  </motion.div>
     </div>
   );
 }
+
+function Label({ children }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.25rem" }}>
+      <div style={{ width: 12, height: "1px", background: C.accent }} />
+      <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: "0.75rem", fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: C.accent }}>{children}</span>
+    </div>
+  );
+}
+
+const sH2 = {
+  fontFamily: "'Playfair Display', Georgia, serif",
+  fontWeight: 700,
+  fontSize: "clamp(1.6rem, 3.5vw, 2.1rem)",
+  color: "#fff",
+  margin: 0,
+};
