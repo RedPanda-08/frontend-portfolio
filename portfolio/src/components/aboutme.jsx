@@ -6,13 +6,13 @@ import { motion } from "framer-motion";
 import "../index.css";
 
 const C = {
-  bg: "#090a0f", 
-  surface: "rgba(255, 255, 255, 0.025)",      // Enhanced backdrop opacity for solid presence
-  surfaceHover: "rgba(255, 255, 255, 0.045)", // Elevated hover definition
-  border: "rgba(255, 255, 255, 0.12)",       // Sharper border presence for maximum structural clarity
-  accent: "rgba(180, 170, 255, 0.85)", 
-  text: "#ffffff", 
-  muted: "rgba(255, 255, 255, 0.75)", 
+  bg: "#090a0f",
+  surface: "rgba(255, 255, 255, 0.025)",
+  surfaceHover: "rgba(255, 255, 255, 0.045)",
+  border: "rgba(255, 255, 255, 0.12)",
+  accent: "rgba(180, 170, 255, 0.85)",
+  text: "#ffffff",
+  muted: "rgba(255, 255, 255, 0.75)",
   dim: "rgba(180, 170, 255, 0.35)",
   statusGreen: "#22c55e",
 };
@@ -26,13 +26,14 @@ const fadeUp = {
   }),
 };
 
-
 export default function AboutMe() {
   const typedRef = useRef(null);
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
   const [windowWidth, setW] = useState(window.innerWidth);
+  const [mouse, setMouse] = useState({ x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 });
 
+  // Main setup effect
   useEffect(() => {
     document.body.style.backgroundColor = C.bg;
     document.body.style.overflowX = "hidden";
@@ -56,35 +57,53 @@ export default function AboutMe() {
 
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+
     let cw = (canvas.width = window.innerWidth);
     let ch = (canvas.height = window.innerHeight);
 
     const handleCanvasResize = () => {
       cw = canvas.width = window.innerWidth;
       ch = canvas.height = window.innerHeight;
-      renderLighting();
     };
     window.addEventListener("resize", handleCanvasResize);
 
-    const renderLighting = () => {
-      ctx.clearRect(0, 0, cw, ch);
-      const primaryGlow = ctx.createRadialGradient(cw * 0.15, ch * 0.15, 0, cw * 0.15, ch * 0.15, Math.max(cw, ch) * 0.55);
-      primaryGlow.addColorStop(0, "rgba(145, 135, 245, 0.08)");
-      primaryGlow.addColorStop(0.5, "rgba(90, 85, 180, 0.01)");
-      primaryGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
-      ctx.fillStyle = primaryGlow;
-      ctx.fillRect(0, 0, cw, ch);
-    };
-
-    renderLighting();
+    const onMouseMove = (e) => setMouse({ x: e.clientX, y: e.clientY });
+    window.addEventListener("mousemove", onMouseMove);
 
     return () => {
       typed.destroy();
       window.removeEventListener("resize", onResize);
       window.removeEventListener("resize", handleCanvasResize);
+      window.removeEventListener("mousemove", onMouseMove);
     };
   }, []);
+
+  // Spotlight rendering effect — reruns on every mouse move
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const cw = canvas.width;
+    const ch = canvas.height;
+
+    ctx.clearRect(0, 0, cw, ch);
+
+    // Main spotlight that follows cursor
+    const spotlight = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, Math.max(cw, ch) * 0.38);
+    spotlight.addColorStop(0,   "rgba(180, 170, 255, 0.15)");
+    spotlight.addColorStop(0.3, "rgba(160, 150, 255, 0.08)");
+    spotlight.addColorStop(0.6, "rgba(120, 110, 220, 0.03)");
+    spotlight.addColorStop(1,   "rgba(0, 0, 0, 0)");
+    ctx.fillStyle = spotlight;
+    ctx.fillRect(0, 0, cw, ch);
+
+    // Static ambient corner glow for depth
+    const ambient = ctx.createRadialGradient(cw * 0.1, ch * 0.1, 0, cw * 0.1, ch * 0.1, Math.max(cw, ch) * 0.4);
+    ambient.addColorStop(0, "rgba(100, 92, 200, 0.05)");
+    ambient.addColorStop(1, "rgba(0, 0, 0, 0)");
+    ctx.fillStyle = ambient;
+    ctx.fillRect(0, 0, cw, ch);
+  }, [mouse]);
 
   const skillsSet1 = [
     { name: "Next.js", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", invert: true },
@@ -156,16 +175,16 @@ export default function AboutMe() {
       <canvas ref={canvasRef} style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none" }} />
 
       <div style={{ position: "relative", zIndex: 4, maxWidth: 1100, margin: "0 auto", padding: "clamp(4rem, 8vw, 6rem) 1.5rem", boxSizing: "border-box" }}>
-        
+
         <div style={{
           display: "grid",
           gridTemplateColumns: windowWidth > 992 ? "repeat(3, 1fr)" : "1fr",
           gap: "1.5rem",
           width: "100%"
         }}>
-          
+
           {/* PROFILE CARD */}
-          <motion.section 
+          <motion.section
             initial="hidden" animate="visible" variants={fadeUp} custom={0.1}
             style={{
               gridColumn: windowWidth > 992 ? "span 2" : "auto",
@@ -241,7 +260,7 @@ export default function AboutMe() {
           </motion.section>
 
           {/* FOCUS CARD */}
-          <motion.section 
+          <motion.section
             initial="hidden" animate="visible" variants={fadeUp} custom={0.18}
             style={{
               background: C.surface,
@@ -278,14 +297,15 @@ export default function AboutMe() {
               <span>Based in Hyderabad</span>
             </div>
           </motion.section>
-            {/* EDUCATION TIMELINE COMPONENT - FIXED ANIMATION */}
-          <motion.section 
-            initial="hidden" 
-            whileInView="visible" 
-            viewport={{ once: true, amount: 0.2 }} // Increased amount to trigger earlier
+
+          {/* EDUCATION TIMELINE */}
+          <motion.section
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
             variants={{
               hidden: { opacity: 0 },
-              visible: { opacity: 1, transition: { staggerChildren: 0.2 } } // Staggers the timeline items
+              visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
             }}
             style={{
               gridColumn: windowWidth > 992 ? "span 2" : "auto",
@@ -304,34 +324,32 @@ export default function AboutMe() {
             </motion.div>
 
             <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: "3rem" }}>
-              {/* Animated Spine Line */}
-              <motion.div 
+              <motion.div
                 initial={{ height: 0 }}
                 whileInView={{ height: "100%" }}
                 transition={{ duration: 1.5, ease: "easeInOut" }}
-                style={{ 
-                  position: "absolute", left: "6px", top: "10px", 
-                  width: "1px", background: "rgba(180, 170, 255, 0.4)" 
-                }} 
+                style={{
+                  position: "absolute", left: "6px", top: "10px",
+                  width: "1px", background: "rgba(180, 170, 255, 0.4)"
+                }}
               />
 
               {educationData.map((edu, i) => (
-                <motion.div 
-                  key={i} 
-                  variants={fadeUp} // This now triggers for each item inside the container
+                <motion.div
+                  key={i}
+                  variants={fadeUp}
                   style={{ position: "relative", paddingLeft: "2.5rem" }}
                 >
-                  {/* Animated Pulse Anchor */}
-                  <motion.div 
+                  <motion.div
                     initial={{ scale: 0 }}
                     whileInView={{ scale: 1 }}
                     transition={{ delay: 0.2 + (i * 0.2), type: "spring" }}
-                    style={{ 
-                      position: "absolute", left: "0px", top: "4px", 
-                      width: "13px", height: "13px", borderRadius: "50%", 
+                    style={{
+                      position: "absolute", left: "0px", top: "4px",
+                      width: "13px", height: "13px", borderRadius: "50%",
                       background: C.bg, border: `2px solid ${C.accent}`,
-                      boxShadow: `0 0 15px ${C.accent}` 
-                    }} 
+                      boxShadow: `0 0 15px ${C.accent}`
+                    }}
                   />
 
                   <div className="timeline-content">
@@ -345,10 +363,8 @@ export default function AboutMe() {
             </div>
           </motion.section>
 
-        
-
           {/* PHILOSOPHY CARD */}
-          <motion.section 
+          <motion.section
             initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUp}
             style={{
               background: C.surface,
@@ -397,7 +413,7 @@ export default function AboutMe() {
           </motion.section>
 
           {/* INFINITE SCROLLING SKILLS TRACK */}
-          <motion.section 
+          <motion.section
             initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUp}
             style={{
               gridColumn: windowWidth > 992 ? "span 3" : "auto",
@@ -414,7 +430,7 @@ export default function AboutMe() {
             }}
           >
             <div style={{ padding: "0 2rem", marginBottom: "0.5rem" }}>
-              <Label>Capabilities</Label>
+              <Label>Tech Stack</Label>
             </div>
 
             <div style={{ display: "flex", width: "max-content" }} className="ticker-track-forward">
@@ -449,7 +465,7 @@ export default function AboutMe() {
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Outfit:wght@300;400;500&display=swap');
         .typed-cursor { color: ${C.accent}; font-weight: 300; }
         body { margin: 0; padding: 0; background: #090a0f; -webkit-font-smoothing: antialiased; }
-        
+
         @keyframes scrollForward {
           0% { transform: translateX(0); }
           100% { transform: translateX(-25%); }
@@ -467,6 +483,8 @@ export default function AboutMe() {
           100% { transform: scale(0.92); opacity: 0.6; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
         }
         .pulse-dot { animation: subtlePulse 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+        canvas { transition: none; }
       `}</style>
     </div>
   );

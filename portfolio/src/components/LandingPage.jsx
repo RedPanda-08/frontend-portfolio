@@ -303,11 +303,16 @@ export default function LandingPage() {
           to   { opacity: 1; }
         }
 
+        /* Professional background enhancement */
         body {
           margin: 0;
           padding: 0;
           min-height: 100dvh;
+          /* Deep charcoal base with subtle violet-blue radial highlights */
           background-color: #0d0e15;
+          background-image: 
+            radial-gradient(circle at 15% 20%, rgba(35, 30, 60, 0.4) 0%, transparent 40%),
+            radial-gradient(circle at 85% 80%, rgba(30, 35, 60, 0.4) 0%, transparent 40%);
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }

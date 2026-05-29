@@ -65,38 +65,60 @@ const ContactPage = () => {
     };
     window.addEventListener("resize", handleCanvasResize);
 
-    const renderStudioLighting = () => {
-      ctx.clearRect(0, 0, cw, ch);
-      
-      // Hemisphere 01: Top-Left Matte Exposure Glow
-      const primaryGlow = ctx.createRadialGradient(
-        cw * 0.15,  
-        ch * 0.15,  
-        0,
-        cw * 0.15,
-        ch * 0.15,
-        Math.max(cw, ch) * 0.55
-      );
-      primaryGlow.addColorStop(0, "rgba(145, 135, 245, 0.08)"); 
-      primaryGlow.addColorStop(0.5, "rgba(90, 85, 180, 0.01)");
-      primaryGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
-      ctx.fillStyle = primaryGlow;
-      ctx.fillRect(0, 0, cw, ch);
+      const renderStudioLighting = () => {
+  ctx.clearRect(0, 0, cw, ch);
 
-      // Hemisphere 02: Lower-Right Soft Refraction Field
-      const secondaryGlow = ctx.createRadialGradient(
-        cw * 0.8,  
-        ch * 0.8,  
-        0,
-        cw * 0.8,
-        ch * 0.8,
-        Math.max(cw, ch) * 0.45
-      );
-      secondaryGlow.addColorStop(0, "rgba(165, 180, 252, 0.02)");
-      secondaryGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
-      ctx.fillStyle = secondaryGlow;
-      ctx.fillRect(0, 0, cw, ch);
-    };
+  // ── Soft Violet Main Glow ──
+  const primaryGlow = ctx.createRadialGradient(
+    cw * 0.18,
+    ch * 0.18,
+    0,
+    cw * 0.18,
+    ch * 0.18,
+    Math.max(cw, ch) * 0.62
+  );
+
+  primaryGlow.addColorStop(0, "rgba(180, 170, 255, 0.14)");
+  primaryGlow.addColorStop(0.22, "rgba(160, 145, 255, 0.08)");
+  primaryGlow.addColorStop(0.5, "rgba(120, 110, 255, 0.025)");
+  primaryGlow.addColorStop(1, "rgba(0,0,0,0)");
+
+  ctx.fillStyle = primaryGlow;
+  ctx.fillRect(0, 0, cw, ch);
+
+  // ── Lower Right Ambient Glow ──
+  const secondaryGlow = ctx.createRadialGradient(
+    cw * 0.82,
+    ch * 0.78,
+    0,
+    cw * 0.82,
+    ch * 0.78,
+    Math.max(cw, ch) * 0.48
+  );
+
+  secondaryGlow.addColorStop(0, "rgba(125, 140, 255, 0.055)");
+  secondaryGlow.addColorStop(0.4, "rgba(125, 140, 255, 0.018)");
+  secondaryGlow.addColorStop(1, "rgba(0,0,0,0)");
+
+  ctx.fillStyle = secondaryGlow;
+  ctx.fillRect(0, 0, cw, ch);
+
+  // ── Center Atmospheric Softness ──
+  const centerGlow = ctx.createRadialGradient(
+    cw * 0.5,
+    ch * 0.4,
+    0,
+    cw * 0.5,
+    ch * 0.4,
+    Math.max(cw, ch) * 0.38
+  );
+
+  centerGlow.addColorStop(0, "rgba(255,255,255,0.012)");
+  centerGlow.addColorStop(1, "rgba(0,0,0,0)");
+
+  ctx.fillStyle = centerGlow;
+  ctx.fillRect(0, 0, cw, ch);
+};
 
     renderStudioLighting();
 
