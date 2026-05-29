@@ -170,7 +170,26 @@ function nodeCentre(id, nodes) {
 
 function ArchDiagram({ arch, visible }) {
   const svgRef = useRef(null);
+  const wrapperRef = useRef(null);
   const rafRef = useRef(null);
+  const [scale, setScale] = useState(1);
+
+  // Dynamic Scale Monitor: Calculates and drops the canvas size cleanly inside mobile display ports
+  useEffect(() => {
+    const updateScale = () => {
+      if (!wrapperRef.current) return;
+      const containerWidth = wrapperRef.current.getBoundingClientRect().width;
+      if (containerWidth < SVG_W) {
+        setScale(containerWidth / SVG_W);
+      } else {
+        setScale(1);
+      }
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
 
   useEffect(() => {
     if (!visible || !svgRef.current) return;
@@ -228,76 +247,92 @@ function ArchDiagram({ arch, visible }) {
   if (!arch) return null;
 
   return (
-    <svg ref={svgRef} width="100%" viewBox={`0 0 ${SVG_W} ${SVG_H}`} style={{ display: "block", fontFamily: "'Outfit', sans-serif" }}>
-      <defs>
-        <filter id="pencil-edge" x="-6%" y="-6%" width="112%" height="112%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="3" seed="8" result="n"/>
-          <feDisplacementMap in="SourceGraphic" in2="n" scale="1.4" xChannelSelector="R" yChannelSelector="G"/>
-        </filter>
-        <filter id="node-glow" x="-25%" y="-25%" width="150%" height="150%">
-          <feGaussianBlur stdDeviation="5" result="b"/>
-          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-        <marker id="arr" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M2 2.5 L10 6 L2 9.5" fill="none" stroke="rgba(165,180,252,0.68)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        </marker>
-        <linearGradient id="ng" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="rgba(32,34,58,0.98)"/>
-          <stop offset="100%" stopColor="rgba(18,20,36,0.98)"/>
-        </linearGradient>
-      </defs>
+    <div ref={wrapperRef} style={{ width: "100%", position: "relative", height: `${SVG_H * scale}px`, overflow: "hidden" }}>
+      <svg
+        ref={svgRef}
+        width={SVG_W}
+        height={SVG_H}
+        viewBox={`0 0 ${SVG_W} ${SVG_H}`}
+        style={{
+          display: "block",
+          fontFamily: "'Outfit', sans-serif",
+          transformOrigin: "top left",
+          transform: `scale(${scale})`,
+          position: "absolute",
+          top: 0,
+          left: 0
+        }}
+      >
+        <defs>
+          <filter id="pencil-edge" x="-6%" y="-6%" width="112%" height="112%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="3" seed="8" result="n"/>
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="1.4" xChannelSelector="R" yChannelSelector="G"/>
+          </filter>
+          <filter id="node-glow" x="-25%" y="-25%" width="150%" height="150%">
+            <feGaussianBlur stdDeviation="5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <marker id="arr" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M2 2.5 L10 6 L2 9.5" fill="none" stroke="rgba(165,180,252,0.68)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </marker>
+          <linearGradient id="ng" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="rgba(32,34,58,0.98)"/>
+            <stop offset="100%" stopColor="rgba(18,20,36,0.98)"/>
+          </linearGradient>
+        </defs>
 
-      {arch.layers.map((l, i) => (
-        <g key={i} className="al" style={{ opacity: 0 }}>
-          <rect x={6} y={l.y} width={SVG_W - 12} height={l.h} rx="4" fill={l.color} stroke="rgba(165,180,252,0.07)" strokeWidth="0.6"/>
-          <text x={16} y={l.y + 15} fill="rgba(165,180,252,0.28)" fontSize="9" fontWeight="500" letterSpacing="0.2em">
-            {l.label.toUpperCase()}
-          </text>
-        </g>
-      ))}
-
-      {arch.edges.map((e, i) => {
-        const a = nodeCentre(e.from, arch.nodes);
-        const b = nodeCentre(e.to,   arch.nodes);
-        return (
-          <path key={i} className="ae" d={pencilEdge(a.x, a.y, b.x, b.y, i)} fill="none" stroke="rgba(165,180,252,0.48)" strokeWidth="1.4" strokeLinecap="round" filter="url(#pencil-edge)" markerEnd="url(#arr)" style={{ opacity: 1 }}/>
-        );
-      })}
-
-      {arch.edges.map((e, i) => {
-        const a  = nodeCentre(e.from, arch.nodes);
-        const b  = nodeCentre(e.to,   arch.nodes);
-        const mx = (a.x + b.x) / 2 + wob(i * 1.8, 10);
-        const my = (a.y + b.y) / 2 - 1;
-        const tw = e.label.length * 5.8 + 16;
-        return (
-          <g key={`el${i}`} className="ael" style={{ opacity: 0 }}>
-            <rect x={mx - tw/2} y={my - 11} width={tw} height={16} rx="3" fill="rgba(11,12,22,0.95)" stroke="rgba(165,180,252,0.16)" strokeWidth="0.7"/>
-            <text x={mx} y={my + 2} textAnchor="middle" fill="rgba(165,180,252,0.75)" fontSize="8.5" fontWeight="500" letterSpacing="0.06em">
-              {e.label}
+        {arch.layers.map((l, i) => (
+          <g key={i} className="al" style={{ opacity: 0 }}>
+            <rect x={6} y={l.y} width={SVG_W - 12} height={l.h} rx="4" fill={l.color} stroke="rgba(165,180,252,0.07)" strokeWidth="0.6"/>
+            <text x={16} y={l.y + 15} fill="rgba(165,180,252,0.28)" fontSize="9" fontWeight="500" letterSpacing="0.2em">
+              {l.label.toUpperCase()}
             </text>
           </g>
-        );
-      })}
+        ))}
 
-      {arch.nodes.map((n, i) => {
-        const cx = n.x + n.w / 2;
-        const cy = n.y + n.h / 2;
-        return (
-          <g key={i}>
-            <rect className="ar" x={n.x - 6} y={n.y - 6} width={n.w + 12} height={n.h + 12} rx="10" fill="rgba(165,180,252,0.045)" filter="url(#node-glow)" style={{ opacity: 0 }}/>
-            <rect className="ar" x={n.x} y={n.y} width={n.w} height={n.h} rx="6" fill="url(#ng)" stroke="rgba(165,180,252,0.55)" strokeWidth="1.1" style={{ opacity: 0 }}/>
-            <rect className="ar" x={n.x + 1} y={n.y + 1} width={n.w - 2} height={14} rx="5" fill="rgba(255,255,255,0.035)" style={{ opacity: 0 }}/>
-            <text className="at" x={cx} y={cy - 8} textAnchor="middle" fill="#edecf0" fontSize="12.5" fontWeight="500" letterSpacing="0.01em" style={{ opacity: 0 }}>
-              {n.label}
-            </text>
-            <text className="as" x={cx} y={cy + 12} textAnchor="middle" fill="rgba(165,180,252,0.5)" fontSize="8.5" fontWeight="300" letterSpacing="0.05em" style={{ opacity: 0 }}>
-              {n.sub}
-            </text>
-          </g>
-        );
-      })}
-    </svg>
+        {arch.edges.map((e, i) => {
+          const a = nodeCentre(e.from, arch.nodes);
+          const b = nodeCentre(e.to,   arch.nodes);
+          return (
+            <path key={i} className="ae" d={pencilEdge(a.x, a.y, b.x, b.y, i)} fill="none" stroke="rgba(165,180,252,0.48)" strokeWidth="1.4" strokeLinecap="round" filter="url(#pencil-edge)" markerEnd="url(#arr)" style={{ opacity: 1 }}/>
+          );
+        })}
+
+        {arch.edges.map((e, i) => {
+          const a  = nodeCentre(e.from, arch.nodes);
+          const b  = nodeCentre(e.to,   arch.nodes);
+          const mx = (a.x + b.x) / 2 + wob(i * 1.8, 10);
+          const my = (a.y + b.y) / 2 - 1;
+          const tw = e.label.length * 5.8 + 16;
+          return (
+            <g key={`el${i}`} className="ael" style={{ opacity: 0 }}>
+              <rect x={mx - tw/2} y={my - 11} width={tw} height={16} rx="3" fill="rgba(11,12,22,0.95)" stroke="rgba(165,180,252,0.16)" strokeWidth="0.7"/>
+              <text x={mx} y={my + 2} textAnchor="middle" fill="rgba(165,180,252,0.75)" fontSize="8.5" fontWeight="500" letterSpacing="0.06em">
+                {e.label}
+              </text>
+            </g>
+          );
+        })}
+
+        {arch.nodes.map((n, i) => {
+          const cx = n.x + n.w / 2;
+          const cy = n.y + n.h / 2;
+          return (
+            <g key={i}>
+              <rect className="ar" x={n.x - 6} y={n.y - 6} width={n.w + 12} height={n.h + 12} rx="10" fill="rgba(165,180,252,0.045)" filter="url(#node-glow)" style={{ opacity: 0 }}/>
+              <rect className="ar" x={n.x} y={n.y} width={n.w} height={n.h} rx="6" fill="url(#ng)" stroke="rgba(165,180,252,0.55)" strokeWidth="1.1" style={{ opacity: 0 }}/>
+              <rect className="ar" x={n.x + 1} y={n.y + 1} width={n.w - 2} height={14} rx="5" fill="rgba(255,255,255,0.035)" style={{ opacity: 0 }}/>
+              <text className="at" x={cx} y={cy - 8} textAnchor="middle" fill="#edecf0" fontSize="12.5" fontWeight="500" letterSpacing="0.01em" style={{ opacity: 0 }}>
+                {n.label}
+              </text>
+              <text className="as" x={cx} y={cy + 12} textAnchor="middle" fill="rgba(165,180,252,0.5)" fontSize="8.5" fontWeight="300" letterSpacing="0.05em" style={{ opacity: 0 }}>
+                {n.sub}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+    </div>
   );
 }
 
@@ -360,18 +395,18 @@ function ArchModal({ project, onClose, isMobile }) {
           </div>
         )}
 
-        <div style={{ display: isMobile ? "block" : "grid", gridTemplateColumns: "1.55fr 1fr", overflowY: "auto", flex: 1 }}>
+        <div className="modal-grid-layout" style={{ overflowY: "auto", flex: 1, touchAction: "manipulation" }}>
           {/* Diagram pane */}
           {(!isMobile || tab === "diagram") && (
-            <div style={{ padding: isMobile ? "1.25rem 0.75rem 1.5rem" : "1.75rem 1.5rem 2rem 2rem", borderRight: isMobile ? "none" : "1px solid rgba(255,255,255,0.05)" }}>
+            <div style={{ padding: isMobile ? "1.5rem 1rem 2.5rem 1rem" : "1.75rem 1.5rem 2rem 2rem" }}>
               <div style={{ display:"flex", alignItems:"center", gap:"0.4rem", marginBottom:"0.9rem", fontFamily:"'Outfit',sans-serif", fontSize:"0.66rem", color:"rgba(165,180,252,0.28)", letterSpacing:"0.08em" }}>
                 <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
                   <path d="M2 10L4 8L9 3L10 4L5 9L3 10Z" stroke="rgba(165,180,252,0.35)" strokeWidth="0.85" fill="rgba(165,180,252,0.07)"/>
                   <path d="M8 2L10 4" stroke="rgba(165,180,252,0.35)" strokeWidth="0.85"/>
                 </svg>
-                sketching architecture…
+                sketching system architecture…
               </div>
-              <ArchDiagram arch={arch} visible={drawn}/>
+              <ArchDiagram arch={arch} visible={drawn} />
             </div>
           )}
 
@@ -559,7 +594,7 @@ export default function Projects() {
                       onMouseLeave={e=>{ e.currentTarget.style.background="rgba(165,180,252,0.05)"; e.currentTarget.style.borderColor="rgba(165,180,252,0.2)"; e.currentTarget.style.color="rgba(165,180,252,0.65)"; }}
                     >
                       <svg width="9" height="9" viewBox="0 0 12 12" fill="none">
-                        <path d="M2 10L4 8L9.5 2.5L10 3L4.5 9L2.5 10.5Z" stroke="currentColor" strokeWidth="0.9" fill="rgba(165,180,252,0.1)"/>
+                        <path d="M2 10L4 8L9.5 2.5 L10 3L4.5 9L2.5 10.5Z" stroke="currentColor" strokeWidth="0.9" fill="rgba(165,180,252,0.1)"/>
                         <path d="M8.5 1.5L10.5 3.5" stroke="currentColor" strokeWidth="0.9"/>
                       </svg>
                       Architecture
@@ -584,6 +619,17 @@ export default function Projects() {
       <style jsx>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Outfit:wght@300;400;500&display=swap');
         body { margin:0; padding:0; background:#0d0e15; -webkit-font-smoothing:antialiased; }
+        
+        .modal-grid-layout {
+          display: grid;
+          grid-template-columns: 1.55fr 1fr;
+        }
+
+        @media (max-width: 768px) {
+          .modal-grid-layout {
+            display: block !important;
+          }
+        }
       `}</style>
     </div>
   );
