@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Typed from "typed.js";
 import { FaGithub, FaLinkedin, FaInstagram, FaFileDownload } from "react-icons/fa";
+import { GitPullRequest, Terminal, Layers, Activity } from "lucide-react";
 import { motion } from "framer-motion";
 import "../index.css";
 
@@ -33,7 +34,8 @@ export default function AboutMe() {
   const [windowWidth, setW] = useState(window.innerWidth);
   const [mouse, setMouse] = useState({ x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 });
 
-  // Main setup effect
+  const isMobile = windowWidth <= 768;
+
   useEffect(() => {
     document.body.style.backgroundColor = C.bg;
     document.body.style.overflowX = "hidden";
@@ -78,7 +80,6 @@ export default function AboutMe() {
     };
   }, []);
 
-  // Spotlight rendering effect — reruns on every mouse move
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -88,7 +89,6 @@ export default function AboutMe() {
 
     ctx.clearRect(0, 0, cw, ch);
 
-    // Main spotlight that follows cursor
     const spotlight = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, Math.max(cw, ch) * 0.38);
     spotlight.addColorStop(0,   "rgba(180, 170, 255, 0.15)");
     spotlight.addColorStop(0.3, "rgba(160, 150, 255, 0.08)");
@@ -97,7 +97,6 @@ export default function AboutMe() {
     ctx.fillStyle = spotlight;
     ctx.fillRect(0, 0, cw, ch);
 
-    // Static ambient corner glow for depth
     const ambient = ctx.createRadialGradient(cw * 0.1, ch * 0.1, 0, cw * 0.1, ch * 0.1, Math.max(cw, ch) * 0.4);
     ambient.addColorStop(0, "rgba(100, 92, 200, 0.05)");
     ambient.addColorStop(1, "rgba(0, 0, 0, 0)");
@@ -174,7 +173,14 @@ export default function AboutMe() {
 
       <canvas ref={canvasRef} style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none" }} />
 
-      <div style={{ position: "relative", zIndex: 4, maxWidth: 1100, margin: "0 auto", padding: "clamp(4rem, 8vw, 6rem) 1.5rem", boxSizing: "border-box" }}>
+      <div style={{ 
+        position: "relative", 
+        zIndex: 4, 
+        maxWidth: 1100, 
+        margin: "0 auto", 
+        padding: `${isMobile ? "clamp(5.5rem, 12vw, 7rem)" : "clamp(3.5rem, 7vw, 6rem)"} 1.5rem clamp(3.5rem, 7vw, 6rem)`, 
+        boxSizing: "border-box" 
+      }}>
 
         <div style={{
           display: "grid",
@@ -191,14 +197,14 @@ export default function AboutMe() {
               background: C.surface,
               border: `1px solid ${C.border}`,
               borderRadius: "4px",
-              padding: "clamp(2rem, 5vw, 3.5rem)",
+              padding: "clamp(1.75rem, 4vw, 3.5rem)",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              gap: "3rem",
+              gap: "2.5rem", // Tightened up overall container padding behavior
               boxSizing: "border-box",
               boxShadow: "0 4px 30px rgba(0, 0, 0, 0.4)",
-              transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
+              transition: "all 0.35s cubic-bezier(0.16, 1, 0.3, 1)"
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = "rgba(180, 170, 255, 0.35)";
@@ -231,35 +237,36 @@ export default function AboutMe() {
                 Available for Opportunities
               </div>
 
-              <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: "clamp(2.5rem, 5vw, 4rem)", lineHeight: 1.1, letterSpacing: "-0.01em", color: C.text, margin: 0 }}>
+              <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: "clamp(2.3rem, 4.5vw, 4rem)", lineHeight: 1.1, letterSpacing: "-0.01em", color: C.text, margin: 0 }}>
                 Hi, I'm Navraj <span style={{ fontStyle: "italic", fontWeight: 400, color: C.accent }}>Singh</span>.
               </h1>
 
-              <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: "clamp(1.1rem, 2vw, 1.35rem)", fontWeight: 300, color: C.muted, margin: 0, minHeight: "1.5em", letterSpacing: "0.01em" }}>
+              <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: "clamp(1.05rem, 1.8vw, 1.35rem)", fontWeight: 300, color: C.muted, margin: 0, minHeight: "1.5em", letterSpacing: "0.01em" }}>
                 I am a <span ref={typedRef} style={{ color: C.text, fontWeight: 400 }} />
               </p>
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "2.5rem", flexWrap: "wrap" }}>
-              <div style={{ display: "flex", gap: "1.5rem" }}>
+            {/* UNIFIED INTERACTION FOOTER BLOCK (Space metrics reduced explicitly) */}
+            <div style={{ display: "flex", alignItems: "center", gap: "1.25rem", flexWrap: "wrap", marginTop: "0.5rem" }}>
+              <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
                 {[
                   { icon: <FaGithub size={19} />, href: "https://github.com/RedPanda-08?tab=repositories" },
                   { icon: <FaLinkedin size={19} />, href: "https://linkedin.com/in/navraj-singh-kalsi-448a30283/" },
                   { icon: <FaInstagram size={19} />, href: "https://instagram.com/" },
                 ].map(({ icon, href }) => (
-                  <a key={href} href={href} target="_blank" rel="noopener noreferrer" style={{ color: C.muted, transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = C.accent} onMouseLeave={e => e.currentTarget.style.color = C.muted}>{icon}</a>
+                  <a key={href} href={href} target="_blank" rel="noopener noreferrer" style={{ color: C.muted, display: "flex", alignItems: "center", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = C.accent} onMouseLeave={e => e.currentTarget.style.color = C.muted}>{icon}</a>
                 ))}
               </div>
 
-              <a href="/resume.pdf" download="Navraj_Singh_Resume.pdf" style={{ textDecoration: "none" }}>
-                <button style={{ display: "inline-flex", alignItems: "center", gap: "0.6rem", fontFamily: "'Outfit', sans-serif", fontSize: "0.78rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.15em", color: "#ffffff", background: "rgba(180, 170, 255, 0.04)", border: `1px solid rgba(180, 170, 255, 0.45)`, borderRadius: "4px", padding: "0.75rem 1.8rem", cursor: "pointer", transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)" }} onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.accent; e.currentTarget.style.backgroundColor = "rgba(180, 170, 255, 0.15)"; e.currentTarget.style.transform = "translateY(-1px)"; }} onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(180, 170, 255, 0.45)"; e.currentTarget.style.backgroundColor = "rgba(180, 170, 255, 0.04)"; e.currentTarget.style.transform = "translateY(0)"; }}>
+              <a href="Navraj Singh resume.pdf" download="Navraj_Singh_Resume.pdf" style={{ textDecoration: "none" }}>
+                <button style={{ display: "inline-flex", alignItems: "center", gap: "0.6rem", fontFamily: "'Outfit', sans-serif", fontSize: "0.78rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.15em", color: "#ffffff", background: "rgba(180, 170, 255, 0.04)", border: `1px solid rgba(180, 170, 255, 0.45)`, borderRadius: "4px", padding: "0.7rem 1.4rem", cursor: "pointer", transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)" }} onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.accent; e.currentTarget.style.backgroundColor = "rgba(180, 170, 255, 0.15)"; e.currentTarget.style.transform = "translateY(-1px)"; }} onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(180, 170, 255, 0.45)"; e.currentTarget.style.backgroundColor = "rgba(180, 170, 255, 0.04)"; e.currentTarget.style.transform = "translateY(0)"; }}>
                   <FaFileDownload size={12} /> Download Resume
                 </button>
               </a>
             </div>
           </motion.section>
 
-          {/* FOCUS CARD */}
+          {/* MY FOCUS CARD */}
           <motion.section
             initial="hidden" animate="visible" variants={fadeUp} custom={0.18}
             style={{
@@ -288,7 +295,7 @@ export default function AboutMe() {
           >
             <Label>My Focus</Label>
             <div style={{ fontFamily: "'Outfit', sans-serif" }}>
-              <p style={{ fontSize: "0.95rem", color: C.text, lineHeight: 1.6, margin: 0, fontWeight: 300 }}>
+              <p style={{ fontSize: "0.95rem", color: C.text, lineHeight: 1.65, margin: 0, fontWeight: 300 }}>
                 I specialize in bridging Full-Stack development with data-driven backends. I love building responsive user interfaces, optimized data processing routines, and reliable engineering structures that keep applications fluid and fast.
               </p>
             </div>
@@ -298,21 +305,63 @@ export default function AboutMe() {
             </div>
           </motion.section>
 
+          {/* INFINITE SCROLLING SKILLS TRACK */}
+          <motion.section
+            initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUp}
+            style={{
+              gridColumn: windowWidth > 992 ? "span 3" : "auto",
+              background: C.surface,
+              border: `1px solid ${C.border}`,
+              borderRadius: "4px",
+              padding: "2rem 0",
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.8rem",
+              boxSizing: "border-box",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.4)",
+              marginTop: "0.5rem",
+              marginBottom: "0.5rem"
+            }}
+          >
+            <div style={{ padding: "0 2rem", marginBottom: "0.5rem" }}>
+              <Label>Tech Stack</Label>
+            </div>
+
+            <div style={{ display: "flex", width: "max-content" }} className="ticker-track-forward">
+              {[...skillsSet1, ...skillsSet1, ...skillsSet1, ...skillsSet1].map((sk, i) => (
+                <div key={`f-${i}`} style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.55rem 1.2rem", background: "rgba(255,255,255,0.02)", border: `1px solid ${C.border}`, borderRadius: "4px", fontFamily: "'Outfit', sans-serif", fontSize: "0.85rem", color: C.text, margin: "0 0.4rem" }}>
+                  <img src={sk.logo} alt="" style={{ width: 14, height: 14, objectFit: "contain", filter: sk.invert ? "invert(1) opacity(0.6)" : "opacity(0.85)" }} />
+                  <span>{sk.name}</span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: "flex", width: "max-content" }} className="ticker-track-backward">
+              {[...skillsSet2, ...skillsSet2, ...skillsSet2, ...skillsSet2].map((sk, i) => (
+                <div key={`r-${i}`} style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.55rem 1.2rem", background: "rgba(255,255,255,0.02)", border: `1px solid ${C.border}`, borderRadius: "4px", fontFamily: "'Outfit', sans-serif", fontSize: "0.85rem", color: C.text, margin: "0 0.4rem" }}>
+                  <img src={sk.logo} alt="" style={{ width: 14, height: 14, objectFit: "contain", filter: sk.invert ? "invert(1) opacity(0.6)" : "opacity(0.85)" }} />
+                  <span>{sk.name}</span>
+                </div>
+              ))}
+            </div>
+          </motion.section>
+
           {/* EDUCATION TIMELINE */}
           <motion.section
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ once: true, amount: 0.15 }}
             variants={{
               hidden: { opacity: 0 },
-              visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
+              visible: { opacity: 1, transition: { staggerChildren: 0.15 } }
             }}
             style={{
               gridColumn: windowWidth > 992 ? "span 2" : "auto",
               background: C.surface,
               border: `1px solid ${C.border}`,
               borderRadius: "4px",
-              padding: "clamp(2rem, 5vw, 4rem)",
+              padding: "clamp(1.5rem, 4vw, 3.5rem)",
               boxSizing: "border-box",
               boxShadow: "0 4px 30px rgba(0, 0, 0, 0.4)",
               overflow: "hidden"
@@ -323,14 +372,14 @@ export default function AboutMe() {
               <h2 style={sH2}>Educational Journey</h2>
             </motion.div>
 
-            <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: "3rem" }}>
+            <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: "2.5rem" }}>
               <motion.div
                 initial={{ height: 0 }}
                 whileInView={{ height: "100%" }}
-                transition={{ duration: 1.5, ease: "easeInOut" }}
+                transition={{ duration: 1.2, ease: "easeInOut" }}
                 style={{
                   position: "absolute", left: "6px", top: "10px",
-                  width: "1px", background: "rgba(180, 170, 255, 0.4)"
+                  width: "1px", background: "rgba(180, 170, 255, 0.3)"
                 }}
               />
 
@@ -338,25 +387,25 @@ export default function AboutMe() {
                 <motion.div
                   key={i}
                   variants={fadeUp}
-                  style={{ position: "relative", paddingLeft: "2.5rem" }}
+                  style={{ position: "relative", paddingLeft: "2.2rem" }}
                 >
                   <motion.div
                     initial={{ scale: 0 }}
                     whileInView={{ scale: 1 }}
-                    transition={{ delay: 0.2 + (i * 0.2), type: "spring" }}
+                    transition={{ delay: 0.1 + (i * 0.15), type: "spring", stiffness: 120 }}
                     style={{
-                      position: "absolute", left: "0px", top: "4px",
-                      width: "13px", height: "13px", borderRadius: "50%",
+                      position: "absolute", left: "0px", top: "5px",
+                      width: "11px", height: "11px", borderRadius: "50%",
                       background: C.bg, border: `2px solid ${C.accent}`,
-                      boxShadow: `0 0 15px ${C.accent}`
+                      boxShadow: `0 0 12px ${C.accent}`
                     }}
                   />
 
-                  <div className="timeline-content">
-                    <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: "0.75rem", color: C.accent, letterSpacing: "0.2em", textTransform: "uppercase" }}>{edu.year}</span>
-                    <h3 style={{ fontSize: "1.3rem", fontWeight: 500, color: C.text, margin: "0.4rem 0 0.2rem 0" }}>{edu.degree}</h3>
-                    <h4 style={{ fontSize: "0.9rem", fontWeight: 400, color: C.muted, margin: 0, opacity: 0.8 }}>{edu.institution}</h4>
-                    <p style={{ fontSize: "0.9rem", color: C.muted, lineHeight: 1.6, marginTop: "0.8rem", maxWidth: "550px", fontWeight: 300 }}>{edu.description}</p>
+                  <div className="timeline-content" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                    <span style={{ fontSize: "0.75rem", color: C.accent, letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 400 }}>{edu.year}</span>
+                    <h3 style={{ fontSize: "1.25rem", fontWeight: 600, color: C.text, margin: "0.3rem 0 0.15rem 0" }}>{edu.degree}</h3>
+                    <h4 style={{ fontSize: "0.88rem", fontWeight: 400, color: C.muted, margin: 0, opacity: 0.85 }}>{edu.institution}</h4>
+                    <p style={{ fontSize: "0.9rem", color: C.muted, lineHeight: 1.6, marginTop: "0.75rem", fontWeight: 300 }}>{edu.description}</p>
                   </div>
                 </motion.div>
               ))}
@@ -392,19 +441,19 @@ export default function AboutMe() {
             <Label>Philosophy</Label>
             <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", fontFamily: "'Outfit', sans-serif" }}>
               <div>
-                <h3 style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontSize: "1.15rem", color: C.text, margin: "0 0 0.4rem 0", fontWeight: 400 }}>Reliable Code</h3>
+                <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: "1.15rem", color: C.text, margin: "0 0 0.4rem 0", fontWeight: 400 }}>Reliable Code</h3>
                 <p style={{ fontSize: "0.9rem", color: C.muted, lineHeight: 1.55, margin: 0, fontWeight: 300 }}>
                   I believe in catching issues early. I write clean validation schemas and robust data configurations to organize logic long before it ever enters production modules.
                 </p>
               </div>
               <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: "1.5rem" }}>
-                <h3 style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontSize: "1.15rem", color: C.text, margin: "0 0 0.4rem 0", fontWeight: 400 }}>Keeping Things Lean</h3>
+                <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: "1.15rem", color: C.text, margin: "0 0 0.4rem 0", fontWeight: 400 }}>Keeping Things Lean</h3>
                 <p style={{ fontSize: "0.9rem", color: C.muted, lineHeight: 1.55, margin: 0, fontWeight: 300 }}>
                   I maintain rapid backend performance by leveraging lightweight, native libraries. Keeping architectures highly cohesive means fewer things break under load.
                 </p>
               </div>
               <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: "1.5rem" }}>
-                <h3 style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontSize: "1.15rem", color: C.text, margin: "0 0 0.4rem 0", fontWeight: 400 }}>Team Collaboration</h3>
+                <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: "1.15rem", color: C.text, margin: "0 0 0.4rem 0", fontWeight: 400 }}>Team Collaboration</h3>
                 <p style={{ fontSize: "0.9rem", color: C.muted, lineHeight: 1.55, margin: 0, fontWeight: 300 }}>
                   Great software isn't built in a vacuum. I value jumping into code reviews, brainstorming edge-cases with teammates, and keeping documentation straightforward so anyone can spin up the environment quickly.
                 </p>
@@ -412,43 +461,128 @@ export default function AboutMe() {
             </div>
           </motion.section>
 
-          {/* INFINITE SCROLLING SKILLS TRACK */}
+          {/* BENTO GRID OPEN SOURCE EXPERIENCE SECTION */}
           <motion.section
-            initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.05 }}
             style={{
               gridColumn: windowWidth > 992 ? "span 3" : "auto",
-              background: C.surface,
-              border: `1px solid ${C.border}`,
-              borderRadius: "4px",
-              padding: "2rem 0",
-              overflow: "hidden",
               display: "flex",
               flexDirection: "column",
-              gap: "0.8rem",
-              boxSizing: "border-box",
-              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.4)"
+              gap: "1.5rem",
+              width: "100%",
+              boxSizing: "border-box"
             }}
           >
-            <div style={{ padding: "0 2rem", marginBottom: "0.5rem" }}>
-              <Label>Tech Stack</Label>
+            <div>
+              <Label>Contributions</Label>
+              <h2 style={sH2}>Engineering Experience</h2>
             </div>
 
-            <div style={{ display: "flex", width: "max-content" }} className="ticker-track-forward">
-              {[...skillsSet1, ...skillsSet1, ...skillsSet1, ...skillsSet1].map((sk, i) => (
-                <div key={`f-${i}`} style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.55rem 1.2rem", background: "rgba(255,255,255,0.02)", border: `1px solid ${C.border}`, borderRadius: "4px", fontFamily: "'Outfit', sans-serif", fontSize: "0.85rem", color: C.text, margin: "0 0.4rem" }}>
-                  <img src={sk.logo} alt="" style={{ width: 14, height: 14, objectFit: "contain", filter: sk.invert ? "invert(1) opacity(0.6)" : "opacity(0.85)" }} />
-                  <span>{sk.name}</span>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: windowWidth > 768 ? (windowWidth <= 992 ? "1fr" : "1.4fr 1fr") : "1fr",
+              gap: "1.2rem",
+              width: "100%"
+            }}>
+              
+              {/* Card 1: Ecosystem Overview */}
+              <div
+                style={{
+                  background: C.surface, border: `1px solid ${C.border}`, borderRadius: "4px", padding: "2rem",
+                  display: "flex", flexDirection: "column", justifyContent: "space-between", gap: "1.5rem",
+                  transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)", boxShadow: "0 4px 30px rgba(0, 0, 0, 0.4)"
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(180, 170, 255, 0.35)"; e.currentTarget.style.backgroundColor = C.surfaceHover; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.backgroundColor = C.surface; }}
+              >
+                <div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap" }}>
+                    <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: "0.65rem", color: C.accent, letterSpacing: "0.15em", textTransform: "uppercase" }}>[ CORE_SUBSYSTEM ]</span>
+                    <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: "0.72rem", color: C.accent, background: "rgba(255,255,255,0.02)", padding: "0.2rem 0.5rem", borderRadius: "3px", border: `1px solid ${C.border}`, letterSpacing: "0.12em", fontWeight: 500 }}>
+                      JUN – AUG 2025
+                    </span>
+                  </div>
+                  <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.4rem", fontWeight: 700, marginTop: "0.75rem", marginBottom: "0.25rem", color: C.text }}>
+                    Social Summer of Code (SSoC)
+                  </h3>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", color: C.accent, fontFamily: "'Outfit', sans-serif", fontSize: "0.9rem", fontWeight: 300 }}>
+                    <GitPullRequest size={14} />
+                    <span>Open Source Contributor</span>
+                  </div>
                 </div>
-              ))}
-            </div>
+                <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: "0.92rem", color: C.muted, lineHeight: 1.6, margin: 0, fontWeight: 300 }}>
+                  Collaborated within the open-source pipeline to rewrite backend routes, patch interface layout constraints, and optimize scalable system parameters.
+                </p>
+              </div>
 
-            <div style={{ display: "flex", width: "max-content" }} className="ticker-track-backward">
-              {[...skillsSet2, ...skillsSet2, ...skillsSet2, ...skillsSet2].map((sk, i) => (
-                <div key={`r-${i}`} style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.55rem 1.2rem", background: "rgba(255,255,255,0.02)", border: `1px solid ${C.border}`, borderRadius: "4px", fontFamily: "'Outfit', sans-serif", fontSize: "0.85rem", color: C.text, margin: "0 0.4rem" }}>
-                  <img src={sk.logo} alt="" style={{ width: 14, height: 14, objectFit: "contain", filter: sk.invert ? "invert(1) opacity(0.6)" : "opacity(0.85)" }} />
-                  <span>{sk.name}</span>
+              {/* Card 2: Technology Footprint */}
+              <div
+                style={{
+                  background: C.surface, border: `1px solid ${C.border}`, borderRadius: "4px", padding: "2rem",
+                  display: "flex", flexDirection: "column", justifyContent: "space-between", gap: "1.5rem",
+                  transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)", boxShadow: "0 4px 30px rgba(0, 0, 0, 0.4)"
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(180, 170, 255, 0.35)"; e.currentTarget.style.backgroundColor = C.surfaceHover; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.backgroundColor = C.surface; }}
+              >
+                <div>
+                  <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: "0.65rem", color: C.accent, letterSpacing: "0.15em", textTransform: "uppercase" }}>[ RUNTIME_STACK ]</span>
+                  <h4 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: "1.15rem", fontWeight: 400, marginTop: "0.5rem", marginBottom: "0", color: C.text }}>
+                    Framework Integration
+                  </h4>
                 </div>
-              ))}
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
+                  {["Next.js", "React", "FastAPI", "Spring Boot", "Git / GitHub", "API Routing"].map((tech, idx) => (
+                    <span key={idx} style={{ fontFamily: "'Outfit', sans-serif", fontSize: "0.7rem", color: C.text, background: "rgba(180, 170, 255, 0.04)", border: `1px solid ${C.border}`, padding: "0.35rem 0.65rem", borderRadius: "3px", fontWeight: 400 }}>
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", color: C.muted, fontSize: "0.72rem", fontFamily: "'Outfit', sans-serif", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                  <Terminal size={12} style={{ color: C.accent }} />
+                  <span>ENV_PRODUCTION_VERIFIED</span>
+                </div>
+              </div>
+
+              {/* Card 3: Deep Stack Metrics Impact */}
+              <div
+                style={{
+                  background: C.surface, border: `1px solid ${C.border}`, borderRadius: "4px", padding: "2rem",
+                  display: "flex", flexDirection: "column", gap: "1.5rem",
+                  gridColumn: windowWidth > 992 ? "span 2" : "span 1",
+                  transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)", boxShadow: "0 4px 30px rgba(0, 0, 0, 0.4)"
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(180, 170, 255, 0.35)"; e.currentTarget.style.backgroundColor = C.surfaceHover; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.backgroundColor = C.surface; }}
+              >
+                <div>
+                  <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: "0.65rem", color: C.accent, letterSpacing: "0.15em", textTransform: "uppercase" }}>[ CORE_METRICS_LOGS ]</span>
+                  <h4 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: "1.15rem", fontWeight: 400, marginTop: "0.5rem", marginBottom: "0", color: C.text }}>
+                    Production Contributions & Subsystem Impact
+                  </h4>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1.5rem" }}>
+                  <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
+                    <Activity size={15} style={{ color: C.accent, marginTop: "0.2rem", flexShrink: 0 }} />
+                    <div>
+                      <h5 style={{ margin: "0 0 0.25rem 0", color: C.text, fontSize: "0.92rem", fontWeight: 500, fontFamily: "'Outfit', sans-serif" }}>Pipeline Concurrency Optimization</h5>
+                      <p style={{ margin: 0, color: C.muted, fontSize: "0.85rem", lineHeight: 1.6, fontWeight: 300, fontFamily: "'Outfit', sans-serif" }}>Refactored application layer request routes to handle asynchronous processing tasks smoothly, neutralizing thread blocks before downstream system filters execute.</p>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
+                    <Layers size={15} style={{ color: C.accent, marginTop: "0.2rem", flexShrink: 0 }} />
+                    <div>
+                      <h5 style={{ margin: "0 0 0.25rem 0", color: C.text, fontSize: "0.92rem", fontWeight: 500, fontFamily: "'Outfit', sans-serif" }}>Payload Interface Validation</h5>
+                      <p style={{ margin: 0, color: C.muted, fontSize: "0.85rem", lineHeight: 1.6, fontWeight: 300, fontFamily: "'Outfit', sans-serif" }}>Patched strict type-checking parsing boundaries to ensure unexpected user payloads or corrupt data schemas dissolve silently at client endpoints.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </motion.section>
 
@@ -462,7 +596,7 @@ export default function AboutMe() {
       </div>
 
       <style jsx>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Outfit:wght@300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap');
         .typed-cursor { color: ${C.accent}; font-weight: 300; }
         body { margin: 0; padding: 0; background: #090a0f; -webkit-font-smoothing: antialiased; }
 
