@@ -76,9 +76,6 @@ export default function Navbar() {
               gap: "2.2rem",
             }}
           >
-            <NavLink to="/" currentPath={location.pathname}>
-              Home
-            </NavLink>
 
             <NavLink to="/about" currentPath={location.pathname}>
               About
@@ -184,13 +181,6 @@ export default function Navbar() {
               padding: "2rem 1rem",
             }}
           >
-            <MobileNavLink
-              to="/"
-              currentPath={location.pathname}
-              onClick={() => setIsOpen(false)}
-            >
-              Home
-            </MobileNavLink>
 
             <MobileNavLink
               to="/about"
