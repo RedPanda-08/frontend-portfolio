@@ -37,47 +37,27 @@ export default function AboutMe() {
 
   const isMobile = windowWidth <= 768;
 
-  // Real-Time System Telemetry Link
+  // Read-Only Telemetry Link (Prevents Double Increments)
   useEffect(() => {
     const backendUrl = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
       ? "http://localhost:5000"
       : "https://portfolio-backend-1-eogw.onrender.com";
 
-    const localStorageKey = "has_visited_portfolio_node";
-
-    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-      fetch(`${backendUrl}/api/track/visit`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data && data.value !== undefined) setVisitorCount(data.value.toLocaleString());
-        })
-        .catch(() => setVisitorCount("Dev Local"));
-      return;
-    }
-
-    const hasVisitedBefore = localStorage.getItem(localStorageKey);
-
-    if (!hasVisitedBefore) {
-      fetch(`${backendUrl}/api/track/visit`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" }
+    // Merged into a unified, secure GET stream reader
+    fetch(`${backendUrl}/api/track/visit`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.value !== undefined) {
+          setVisitorCount(data.value.toLocaleString());
+        }
       })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data && data.value !== undefined) {
-            setVisitorCount(data.value.toLocaleString());
-            localStorage.setItem(localStorageKey, "true");
-          }
-        })
-        .catch(() => setVisitorCount("Offline"));
-    } else {
-      fetch(`${backendUrl}/api/track/visit`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data && data.value !== undefined) setVisitorCount(data.value.toLocaleString());
-        })
-        .catch(() => setVisitorCount("Offline"));
-    }
+      .catch(() => {
+        if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+          setVisitorCount("Dev Local");
+        } else {
+          setVisitorCount("Offline");
+        }
+      });
   }, []);
 
   useEffect(() => {
