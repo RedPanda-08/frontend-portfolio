@@ -627,7 +627,7 @@ export default function AboutMe() {
           <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
             <span style={{ color: "rgba(255, 255, 255, 0.6)" }}>© {new Date().getFullYear()} Navraj Singh</span>
             <span style={{ fontSize: "0.68rem", fontFamily: "monospace", color: "rgba(255, 255, 255, 0.25)", letterSpacing: "0.05em" }}>
-              SYSTEM_UPTIME_STABLE // UNIQUE_TRACES: <span style={{ color: C.accent }}>{visitorCount}</span>
+              Clients Visited: <span style={{ color: C.accent }}>{visitorCount}</span>
             </span>
           </div>
           <span style={{ textAlign: isMobile ? "left" : "right", fontWeight: 400, color: "rgba(255, 255, 255, 0.45)" }}>
