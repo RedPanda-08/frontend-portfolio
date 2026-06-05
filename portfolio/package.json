@@ -16,7 +16,7 @@
     "@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector",
     "framer-motion": "^12.23.6",
     "lucide-react": "^0.479.0",
-    "netlify-cli": "^19.0.2",
+    "netlify-cli": "^26.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-ga4": "^2.1.0",

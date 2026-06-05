@@ -33,8 +33,52 @@ export default function AboutMe() {
   const canvasRef = useRef(null);
   const [windowWidth, setW] = useState(window.innerWidth);
   const [mouse, setMouse] = useState({ x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 });
+  const [visitorCount, setVisitorCount] = useState("...");
 
   const isMobile = windowWidth <= 768;
+
+  // Real-Time System Telemetry Link
+  useEffect(() => {
+    const backendUrl = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+      ? "http://localhost:5000"
+      : "https://portfolio-backend-1-eogw.onrender.com";
+
+    const localStorageKey = "has_visited_portfolio_node";
+
+    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+      fetch(`${backendUrl}/api/track/visit`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && data.value !== undefined) setVisitorCount(data.value.toLocaleString());
+        })
+        .catch(() => setVisitorCount("Dev Local"));
+      return;
+    }
+
+    const hasVisitedBefore = localStorage.getItem(localStorageKey);
+
+    if (!hasVisitedBefore) {
+      fetch(`${backendUrl}/api/track/visit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && data.value !== undefined) {
+            setVisitorCount(data.value.toLocaleString());
+            localStorage.setItem(localStorageKey, "true");
+          }
+        })
+        .catch(() => setVisitorCount("Offline"));
+    } else {
+      fetch(`${backendUrl}/api/track/visit`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && data.value !== undefined) setVisitorCount(data.value.toLocaleString());
+        })
+        .catch(() => setVisitorCount("Offline"));
+    }
+  }, []);
 
   useEffect(() => {
     document.body.style.backgroundColor = C.bg;
@@ -149,7 +193,6 @@ export default function AboutMe() {
       ref={containerRef}
       style={{ position: "relative", minHeight: "100vh", backgroundColor: C.bg, color: C.text, overflowX: "hidden" }}
     >
-      {/* Micro-Grain Film Overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -160,7 +203,6 @@ export default function AboutMe() {
         }}
       />
 
-      {/* Horizontal Guideline Spec Lines */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -201,7 +243,7 @@ export default function AboutMe() {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              gap: "2.5rem", // Tightened up overall container padding behavior
+              gap: "2.5rem",
               boxSizing: "border-box",
               boxShadow: "0 4px 30px rgba(0, 0, 0, 0.4)",
               transition: "all 0.35s cubic-bezier(0.16, 1, 0.3, 1)"
@@ -246,7 +288,6 @@ export default function AboutMe() {
               </p>
             </div>
 
-            {/* UNIFIED INTERACTION FOOTER BLOCK (Space metrics reduced explicitly) */}
             <div style={{ display: "flex", alignItems: "center", gap: "1.25rem", flexWrap: "wrap", marginTop: "0.5rem" }}>
               <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
                 {[
@@ -588,15 +629,35 @@ export default function AboutMe() {
 
         </div>
 
-        <footer style={{ borderTop: `1px solid ${C.border}`, marginTop: "4rem", paddingTop: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: "'Outfit', sans-serif", fontSize: "0.75rem", color: C.dim, letterSpacing: "0.02em" }}>
-          <span>© {new Date().getFullYear()} Navraj Singh</span>
-          <span>Full Stack Developer | Data Scientist</span>
+        {/* REFINED SYSTEM LOG FOOTER BLOCK */}
+        <footer style={{ 
+          borderTop: `1px solid ${C.border}`, 
+          marginTop: "4rem", 
+          paddingTop: "2rem", 
+          display: "flex", 
+          justifyContent: "space-between", 
+          alignItems: "center", 
+          fontFamily: "'Outfit', sans-serif", 
+          fontSize: "0.75rem", 
+          color: C.dim, 
+          letterSpacing: "0.02em",
+          flexWrap: "wrap",
+          gap: "1rem"
+        }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+            <span style={{ color: "rgba(255, 255, 255, 0.6)" }}>© {new Date().getFullYear()} Navraj Singh</span>
+            <span style={{ fontSize: "0.68rem", fontFamily: "monospace", color: "rgba(255, 255, 255, 0.25)", letterSpacing: "0.05em" }}>
+              SYSTEM_UPTIME_STABLE // UNIQUE_TRACES: <span style={{ color: C.accent }}>{visitorCount}</span>
+            </span>
+          </div>
+          <span style={{ textAlign: isMobile ? "left" : "right", fontWeight: 400, color: "rgba(255, 255, 255, 0.45)" }}>
+            Full Stack Developer | Data Scientist
+          </span>
         </footer>
 
       </div>
 
-      <style jsx>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap');
+      <style>{`
         .typed-cursor { color: ${C.accent}; font-weight: 300; }
         body { margin: 0; padding: 0; background: #090a0f; -webkit-font-smoothing: antialiased; }
 
