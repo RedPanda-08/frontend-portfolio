@@ -29,11 +29,11 @@ const fadeUp = {
 const architectures = {
   1: {
     nodes: [
-      { id: "ui",    label: "Next.js UI",       sub: "SSR · Routing · Tailwind",   x: 200, y: 32,  w: 240, h: 56 },
-      { id: "api",   label: "FastAPI",          sub: "REST Gateway · JWT · CORS",  x: 200, y: 148, w: 240, h: 56 },
-      { id: "ai",    label: "LLM Engine",        sub: "OpenAI · Prompt Pipeline",   x: 20,  y: 268, w: 185, h: 56 },
+      { id: "ui",    label: "Next.js UI",      sub: "SSR · Routing · Tailwind",    x: 200, y: 32,  w: 240, h: 56 },
+      { id: "api",   label: "FastAPI",         sub: "REST Gateway · JWT · CORS",   x: 200, y: 148, w: 240, h: 56 },
+      { id: "ai",    label: "LLM Engine",        sub: "OpenAI · Prompt Pipeline",    x: 20,  y: 268, w: 185, h: 56 },
       { id: "db",    label: "PostgreSQL",        sub: "ORM · Migrations · Pool",    x: 435, y: 268, w: 185, h: 56 },
-      { id: "queue", label: "Task Queue",        sub: "Celery · Redis Broker",      x: 200, y: 388, w: 240, h: 56 },
+      { id: "queue", label: "Task Queue",        sub: "Celery · Redis Broker",       x: 200, y: 388, w: 240, h: 56 },
       { id: "cdn",   label: "CDN / Edge",        sub: "Vercel · Cache · Delivery",  x: 200, y: 508, w: 240, h: 56 },
     ],
     edges: [
@@ -174,7 +174,6 @@ function ArchDiagram({ arch, visible }) {
   const rafRef = useRef(null);
   const [scale, setScale] = useState(1);
 
-  // Dynamic Scale Monitor: Calculates and drops the canvas size cleanly inside mobile display ports
   useEffect(() => {
     const updateScale = () => {
       if (!wrapperRef.current) return;
@@ -576,7 +575,7 @@ export default function Projects() {
                   <p style={{ fontFamily:"'Outfit',sans-serif", fontSize:"0.95rem", fontWeight:300, color:C.text, lineHeight:1.65, margin:0, opacity:0.95 }}>{project.description}</p>
                 </div>
                 <div style={{ display:"flex", flexDirection:"column", gap:"1.25rem" }}>
-                  <div style={{ display:"flex", flexWrap:"wrap", gap:"0.5rem" }}>
+                  <div style={{ display:"flex", flexWrap:"wrap", gap:"0.4rem" }}>
                     {project.technologies.map((tech,i)=>(
                       <span key={i} style={{ fontFamily:"'Outfit',sans-serif", fontSize:"0.72rem", fontWeight:400, color:C.muted, background:"rgba(255,255,255,0.015)", border:`1px solid ${C.border}`, padding:"0.35rem 0.75rem", borderRadius:"3px", letterSpacing:"0.02em" }}>{tech}</span>
                     ))}
@@ -606,9 +605,34 @@ export default function Projects() {
           </div>
         </motion.section>
 
-        <footer style={{ borderTop:`1px solid ${C.border}`, paddingTop:"2rem", display:"flex", justifyContent:"space-between", alignItems:"center", fontFamily:"'Outfit',sans-serif", fontSize:"0.75rem", color:C.dim, letterSpacing:"0.02em" }}>
-          <span>© {new Date().getFullYear()} Navraj Singh</span>
-          <span>Full Stack Developer | Data Scientist</span>
+            {/* FULLY SYNCHRONIZED MOBILE FRIENDLY FOOTER BLOCK */}
+        <footer style={{ 
+          borderTop: `1px solid ${C.border}`, 
+          marginTop: "clamp(5rem, 10vw, 7rem)", 
+          paddingTop: "1rem", 
+          display: "flex", 
+          flexDirection: isMobile ? "column" : "row",
+          justifyContent: "space-between", 
+          alignItems: isMobile ? "flex-start" : "center", 
+          fontFamily: "'Outfit', sans-serif", 
+          fontSize: "0.75rem", 
+          color: C.muted, 
+          letterSpacing: "0.02em",
+          gap: isMobile ? "0.4rem" : "1rem" // Snug gap alignment for stacked elements
+        }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem", width: isMobile ? "100%" : "auto" }}>
+            <span style={{ color: "rgba(255, 255, 255, 0.6)" }}>© {new Date().getFullYear()} Navraj Singh</span>
+          </div>
+          <span style={{ 
+            textAlign: isMobile ? "left" : "right", 
+            fontWeight: 400, 
+            color: "rgba(255, 255, 255, 0.45)",
+            width: isMobile ? "100%" : "auto",
+            borderTop: "none", 
+            paddingTop: "0"   
+          }}>
+            Full Stack Developer | Data Scientist
+          </span>
         </footer>
       </div>
 
@@ -637,8 +661,8 @@ export default function Projects() {
 
 function Label({ children }) {
   return (
-    <div style={{ display:"flex", alignItems:"center", gap:"0.5rem", marginBottom:"0.25rem" }}>
-      <div style={{ width:14, height:"1px", background:C.accent }}/>
+    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.25rem" }}>
+      <div style={{ width: 14, height: "1px", background:C.accent }} />
       <span style={{ fontFamily:"'Outfit',sans-serif", fontSize:"0.75rem", fontWeight:500, letterSpacing:"0.2em", textTransform:"uppercase", color:C.accent }}>{children}</span>
     </div>
   );

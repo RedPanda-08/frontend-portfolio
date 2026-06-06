@@ -12,7 +12,7 @@ const C = {
   surfaceHover: "rgba(255, 255, 255, 0.015)",
   border: "rgba(255, 255, 255, 0.06)", // Sharper border visibility
   text: "#ffffff",        // Brilliant Pure White for absolute reading clarity
-  muted: "rgba(255, 255, 255, 0.8)",  // High-contrast secondary text string
+  muted: "#a1a4b0",       // High-contrast secondary text grey string
   accent: "rgba(180, 170, 255, 1)",   // Vibrant Periwinkle Anchor Core
   dim: "rgba(180, 170, 255, 0.45)"
 };
@@ -40,6 +40,8 @@ const ContactPage = () => {
   const [formStatus, setFormStatus] = useState(null);
   const [alertMessage, setAlertMessage] = useState('');
 
+  const isMobile = windowWidth <= 768;
+
   useEffect(() => {
     document.body.style.backgroundColor = C.bg;
     document.body.style.overflowX = "hidden";
@@ -65,60 +67,60 @@ const ContactPage = () => {
     };
     window.addEventListener("resize", handleCanvasResize);
 
-      const renderStudioLighting = () => {
-  ctx.clearRect(0, 0, cw, ch);
+    const renderStudioLighting = () => {
+      ctx.clearRect(0, 0, cw, ch);
 
-  // ── Soft Violet Main Glow ──
-  const primaryGlow = ctx.createRadialGradient(
-    cw * 0.18,
-    ch * 0.18,
-    0,
-    cw * 0.18,
-    ch * 0.18,
-    Math.max(cw, ch) * 0.62
-  );
+      // ── Soft Violet Main Glow ──
+      const primaryGlow = ctx.createRadialGradient(
+        cw * 0.18,
+        ch * 0.18,
+        0,
+        cw * 0.18,
+        ch * 0.18,
+        Math.max(cw, ch) * 0.62
+      );
 
-  primaryGlow.addColorStop(0, "rgba(180, 170, 255, 0.14)");
-  primaryGlow.addColorStop(0.22, "rgba(160, 145, 255, 0.08)");
-  primaryGlow.addColorStop(0.5, "rgba(120, 110, 255, 0.025)");
-  primaryGlow.addColorStop(1, "rgba(0,0,0,0)");
+      primaryGlow.addColorStop(0, "rgba(180, 170, 255, 0.14)");
+      primaryGlow.addColorStop(0.22, "rgba(160, 145, 255, 0.08)");
+      primaryGlow.addColorStop(0.5, "rgba(120, 110, 255, 0.025)");
+      primaryGlow.addColorStop(1, "rgba(0,0,0,0)");
 
-  ctx.fillStyle = primaryGlow;
-  ctx.fillRect(0, 0, cw, ch);
+      ctx.fillStyle = primaryGlow;
+      ctx.fillRect(0, 0, cw, ch);
 
-  // ── Lower Right Ambient Glow ──
-  const secondaryGlow = ctx.createRadialGradient(
-    cw * 0.82,
-    ch * 0.78,
-    0,
-    cw * 0.82,
-    ch * 0.78,
-    Math.max(cw, ch) * 0.48
-  );
+      // ── Lower Right Ambient Glow ──
+      const secondaryGlow = ctx.createRadialGradient(
+        cw * 0.82,
+        ch * 0.78,
+        0,
+        cw * 0.82,
+        ch * 0.78,
+        Math.max(cw, ch) * 0.48
+      );
 
-  secondaryGlow.addColorStop(0, "rgba(125, 140, 255, 0.055)");
-  secondaryGlow.addColorStop(0.4, "rgba(125, 140, 255, 0.018)");
-  secondaryGlow.addColorStop(1, "rgba(0,0,0,0)");
+      secondaryGlow.addColorStop(0, "rgba(125, 140, 255, 0.055)");
+      secondaryGlow.addColorStop(0.4, "rgba(125, 140, 255, 0.018)");
+      secondaryGlow.addColorStop(1, "rgba(0,0,0,0)");
 
-  ctx.fillStyle = secondaryGlow;
-  ctx.fillRect(0, 0, cw, ch);
+      ctx.fillStyle = secondaryGlow;
+      ctx.fillRect(0, 0, cw, ch);
 
-  // ── Center Atmospheric Softness ──
-  const centerGlow = ctx.createRadialGradient(
-    cw * 0.5,
-    ch * 0.4,
-    0,
-    cw * 0.5,
-    ch * 0.4,
-    Math.max(cw, ch) * 0.38
-  );
+      // ── Center Atmospheric Softness ──
+      const centerGlow = ctx.createRadialGradient(
+        cw * 0.5,
+        ch * 0.4,
+        0,
+        cw * 0.5,
+        ch * 0.4,
+        Math.max(cw, ch) * 0.38
+      );
 
-  centerGlow.addColorStop(0, "rgba(255,255,255,0.012)");
-  centerGlow.addColorStop(1, "rgba(0,0,0,0)");
+      centerGlow.addColorStop(0, "rgba(255,255,255,0.012)");
+      centerGlow.addColorStop(1, "rgba(0,0,0,0)");
 
-  ctx.fillStyle = centerGlow;
-  ctx.fillRect(0, 0, cw, ch);
-};
+      ctx.fillStyle = centerGlow;
+      ctx.fillRect(0, 0, cw, ch);
+    };
 
     renderStudioLighting();
 
@@ -258,7 +260,7 @@ const ContactPage = () => {
                 fontFamily: "'Outfit', sans-serif",
                 fontSize: "1.02rem",
                 fontWeight: 300,
-                color: C.muted,
+                color: "rgba(255,255,255,0.75)",
                 lineHeight: 1.6,
                 margin: "1rem 0 0 0"
               }}>
@@ -296,7 +298,7 @@ const ContactPage = () => {
                     { icon: <FaLinkedin size={18} />, href: "https://linkedin.com/in/" },
                     { icon: <FaInstagram size={18} />, href: "https://www.instagram.com/" },
                   ].map((social, i) => (
-                    <a key={i} href={social.href} target="_blank" rel="noopener noreferrer" className="studio-social-icon-anchor" style={{ color: C.muted, transition: "transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease" }}>
+                    <a key={i} href={social.href} target="_blank" rel="noopener noreferrer" className="studio-social-icon-anchor" style={{ color: "rgba(255,255,255,0.75)", transition: "transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease" }}>
                       {social.icon}
                     </a>
                   ))}
@@ -412,10 +414,34 @@ const ContactPage = () => {
 
         </div>
 
-        {/* STUDIO FOOTER */}
-        <footer style={{ borderTop: `1px solid ${C.border}`, marginTop: "clamp(5rem, 10vw, 7rem)", paddingTop: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: "'Outfit', sans-serif", fontSize: "0.75rem", color: C.dim, letterSpacing: "0.02em" }}>
-          <span>© {new Date().getFullYear()} Navraj Singh</span>
-          <span>Full Stack Developer | Data Scientist</span>
+        {/* FULLY SYNCHRONIZED MOBILE FRIENDLY FOOTER BLOCK */}
+        <footer style={{ 
+          borderTop: `1px solid ${C.border}`, 
+          marginTop: "clamp(5rem, 10vw, 7rem)", 
+          paddingTop: "1rem", 
+          display: "flex", 
+          flexDirection: isMobile ? "column" : "row",
+          justifyContent: "space-between", 
+          alignItems: isMobile ? "flex-start" : "center", 
+          fontFamily: "'Outfit', sans-serif", 
+          fontSize: "0.75rem", 
+          color: C.muted, 
+          letterSpacing: "0.02em",
+          gap: isMobile ? "0.4rem" : "1rem" // Snug gap alignment for stacked elements
+        }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem", width: isMobile ? "100%" : "auto" }}>
+            <span style={{ color: "rgba(255, 255, 255, 0.6)" }}>© {new Date().getFullYear()} Navraj Singh</span>
+          </div>
+          <span style={{ 
+            textAlign: isMobile ? "left" : "right", 
+            fontWeight: 400, 
+            color: "rgba(255, 255, 255, 0.45)",
+            width: isMobile ? "100%" : "auto",
+            borderTop: "none", 
+            paddingTop: "0"   
+          }}>
+            Full Stack Developer | Data Scientist
+          </span>
         </footer>
 
       </div>

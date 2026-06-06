@@ -33,32 +33,8 @@ export default function AboutMe() {
   const canvasRef = useRef(null);
   const [windowWidth, setW] = useState(window.innerWidth);
   const [mouse, setMouse] = useState({ x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 });
-  const [visitorCount, setVisitorCount] = useState("...");
 
   const isMobile = windowWidth <= 768;
-
-  // Read-Only Telemetry Link (Prevents Double Increments)
-  useEffect(() => {
-    const backendUrl = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-      ? "http://localhost:5000"
-      : "https://portfolio-backend-1-eogw.onrender.com";
-
-    // Merged into a unified, secure GET stream reader
-    fetch(`${backendUrl}/api/track/visit`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data && data.value !== undefined) {
-          setVisitorCount(data.value.toLocaleString());
-        }
-      })
-      .catch(() => {
-        if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-          setVisitorCount("Dev Local");
-        } else {
-          setVisitorCount("Offline");
-        }
-      });
-  }, []);
 
   useEffect(() => {
     document.body.style.backgroundColor = C.bg;
@@ -609,28 +585,31 @@ export default function AboutMe() {
 
         </div>
 
-        {/* REFINED SYSTEM LOG FOOTER BLOCK */}
         <footer style={{ 
           borderTop: `1px solid ${C.border}`, 
-          marginTop: "4rem", 
-          paddingTop: "2rem", 
+          marginTop: "clamp(5rem, 10vw, 7rem)", 
+          paddingTop: "1rem", 
           display: "flex", 
+          flexDirection: isMobile ? "column" : "row",
           justifyContent: "space-between", 
-          alignItems: "center", 
+          alignItems: isMobile ? "flex-start" : "center", 
           fontFamily: "'Outfit', sans-serif", 
           fontSize: "0.75rem", 
-          color: C.dim, 
+          color: C.muted, 
           letterSpacing: "0.02em",
-          flexWrap: "wrap",
-          gap: "1rem"
+          gap: isMobile ? "0.4rem" : "1rem" // Snug gap alignment for stacked elements
         }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem", width: isMobile ? "100%" : "auto" }}>
             <span style={{ color: "rgba(255, 255, 255, 0.6)" }}>© {new Date().getFullYear()} Navraj Singh</span>
-            <span style={{ fontSize: "0.68rem", fontFamily: "monospace", color: "rgba(255, 255, 255, 0.25)", letterSpacing: "0.05em" }}>
-              Clients Visited: <span style={{ color: C.accent }}>{visitorCount}</span>
-            </span>
           </div>
-          <span style={{ textAlign: isMobile ? "left" : "right", fontWeight: 400, color: "rgba(255, 255, 255, 0.45)" }}>
+          <span style={{ 
+            textAlign: isMobile ? "left" : "right", 
+            fontWeight: 400, 
+            color: "rgba(255, 255, 255, 0.45)",
+            width: isMobile ? "100%" : "auto",
+            borderTop: "none", 
+            paddingTop: "0"   
+          }}>
             Full Stack Developer | Data Scientist
           </span>
         </footer>
