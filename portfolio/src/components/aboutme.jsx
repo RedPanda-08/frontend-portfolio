@@ -48,7 +48,7 @@ export default function AboutMe() {
     window.addEventListener("resize", onResize);
 
     const typed = new Typed(typedRef.current, {
-      strings: ["Data Science Student", "Full Stack Developer", "Passionate Photographer"],
+      strings: ["Data Analyst", "Full Stack Web Developer", "Passionate Photographer"],
       typeSpeed: 60,
       backSpeed: 40,
       loop: true,
