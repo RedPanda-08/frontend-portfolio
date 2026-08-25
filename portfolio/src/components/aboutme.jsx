@@ -255,7 +255,7 @@ export default function AboutMe() {
                 ))}
               </div>
 
-              <a href="Navraj Singh resume.pdf" download="Navraj_Singh_Resume.pdf" style={{ textDecoration: "none" }}>
+              <a href="Combined_resume.pdf" download="Navraj_Singh_Resume.pdf" style={{ textDecoration: "none" }}>
                 <button style={{ display: "inline-flex", alignItems: "center", gap: "0.6rem", fontFamily: "'Outfit', sans-serif", fontSize: "0.78rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.15em", color: "#ffffff", background: "rgba(180, 170, 255, 0.04)", border: `1px solid rgba(180, 170, 255, 0.45)`, borderRadius: "4px", padding: "0.7rem 1.4rem", cursor: "pointer", transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)" }} onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.accent; e.currentTarget.style.backgroundColor = "rgba(180, 170, 255, 0.15)"; e.currentTarget.style.transform = "translateY(-1px)"; }} onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(180, 170, 255, 0.45)"; e.currentTarget.style.backgroundColor = "rgba(180, 170, 255, 0.04)"; e.currentTarget.style.transform = "translateY(0)"; }}>
                   <FaFileDownload size={12} /> Download Resume
                 </button>
